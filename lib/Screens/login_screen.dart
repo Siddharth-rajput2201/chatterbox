@@ -196,7 +196,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           Padding(
                             padding: const EdgeInsets.only(bottom : 10.0),
                             child: GestureDetector(
-                              onTap: ()=> {performLogin()},
+                              onTap: ()=> {
+                                performLogin()
+                              },
                               child: Container(
                                 width: _width*0.65,
                                 decoration: BoxDecoration(
@@ -555,9 +557,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
             ),
-
-
-
           ],
         ),
       ),
@@ -569,7 +568,11 @@ class _LoginScreenState extends State<LoginScreen> {
     {
       if(user != null)
         {
-          authenticateUser(user);
+          Navigator.pushReplacement(context, MaterialPageRoute(builder:(context)
+          {
+            return HomeScreen();
+          }));
+          //authenticateUser(user);
         }
       else
         {
@@ -600,30 +603,31 @@ class _LoginScreenState extends State<LoginScreen> {
     });
   }
 
-  void authenticateUser(User user)
-  {
-    _repository.authenticateUser(user).then((isNewUser)
-    {
-      if(isNewUser)
-      {
-        _repository.addDataToDb(user).then((value){
-          Navigator.pushReplacement(context, MaterialPageRoute(builder:(context)
-          {
-            return HomeScreen();
-          }));
-        });
-        //SnackBar(content: Text("USER DOES NOT EXIST PLEASE SIGN UP"),);
-      }
-      else
-      {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder:(context)
-        {
-          return HomeScreen();
-        }));
-      }
-    }
-    );
-  }
+
+  // void authenticateUser(User user)
+  // {
+  //   _repository.authenticateUser(user).then((isNewUser)
+  //   {
+  //     if(isNewUser)
+  //     {
+  //       _repository.addDataToDb(user).then((value){
+  //         Navigator.pushReplacement(context, MaterialPageRoute(builder:(context)
+  //         {
+  //           return HomeScreen();
+  //         }));
+  //       });
+  //       //SnackBar(content: Text("USER DOES NOT EXIST PLEASE SIGN UP"),);
+  //     }
+  //     else
+  //     {
+  //       Navigator.pushReplacement(context, MaterialPageRoute(builder:(context)
+  //       {
+  //         return LoginScreen();
+  //       }));
+  //     }
+  //   }
+  //   );
+  // }
 
 
 }

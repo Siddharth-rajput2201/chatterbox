@@ -10,10 +10,12 @@ class FirebaseMethods
   GoogleSignIn _googleSignIn = GoogleSignIn();
   static final FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
   ModelUser modelUser;
+
   Future<User> getCurrentUser() async
   {
     User currentUser;
     currentUser = _auth.currentUser;
+    print(currentUser.uid);
     return currentUser;
   }
 
@@ -21,12 +23,14 @@ class FirebaseMethods
   {
     GoogleSignInAccount _signInAccount = await _googleSignIn.signIn(); // Calls box for email in google account
     GoogleSignInAuthentication _signInAuthentication = await _signInAccount.authentication; // authentication creadentials for google
+
     final AuthCredential credential  = GoogleAuthProvider.credential(
       accessToken: _signInAuthentication.accessToken, // takes the required credentials
       idToken:  _signInAuthentication.idToken,
     );
     UserCredential _userCredential = await _auth.signInWithCredential(credential);
     User user = _userCredential.user;
+    print(user.uid);
     return user;
   }
 
@@ -44,4 +48,29 @@ class FirebaseMethods
     modelUser = ModelUser(user.uid, user.displayName, user.email, username, null, null, user.photoURL);
     firebaseFirestore.collection("users").doc(user.uid).set(modelUser.toMap(modelUser));
   }
+
+  Future<void> signOutUser() async {
+  //  User user = await getCurrentUser();
+    if(await _googleSignIn.isSignedIn() == false) {
+      await _googleSignIn.disconnect();
+      await _googleSignIn.signOut();
+    }
+    return await _auth.signOut();
+  }
+    // print(user.providerData[1].providerId);
+    // print(user.uid);
+    // print(user.providerData[1].providerId);
+    // if (user.providerData[1].providerId == 'google.com') {
+    //   await _googleSignIn.disconnect();
+    // }
+    // await _auth.signOut();
+    // if(await _googleSignIn.isSignedIn() == true)
+    //   {
+    //     print("true");
+    //     await _googleSignIn.disconnect();
+    //       await _googleSignIn.signOut();
+    //       await _auth.signOut();
+    //   }
+    //    await _auth.signOut();
+    //return Future.value(true);
 }

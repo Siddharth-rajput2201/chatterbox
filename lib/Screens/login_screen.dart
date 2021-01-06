@@ -188,7 +188,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         )
                     ),
                     SizedBox(height: 10,),
+
                     Text("OR",style: TextStyle(fontSize: 17),),
+
                     Padding(
                       padding: const EdgeInsets.all(10.0),
                       child: Column(
@@ -230,69 +232,6 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             ),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(bottom : 10.0 , top : 10.0),
-                            child: Container(
-                                width: _width*0.65,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(30),
-                                  color: Color(0xff303030),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey[800],
-                                      //color: Colors.grey.withOpacity(0.5),
-                                      spreadRadius: 4,
-                                      blurRadius: 4,
-                                      offset: Offset(0, 0), // changes position of shadow
-                                    ),
-                                  ],
-                                  border: Border.all(
-                                    width: 2,
-                                    color: Colors.cyan[800],
-                                  ),
-                                ),
-                                child : Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Image.asset('assets/images/facebook_logo.png',height: _height*0.07,width: _width*0.07,),
-                                    Padding(
-                                      padding: const EdgeInsets.only(bottom : 10.0 , top : 10.0),
-                                      child: Text("LOGIN WITH FACEBOOK"),
-                                    ),
-                                  ],)
-                            ),
-                          ),
-                          // Padding(
-                          //   padding: const EdgeInsets.only(bottom : 10.0 , top : 10.0),
-                          //   child: Container(
-                          //       width: _width*0.7,
-                          //       decoration: BoxDecoration(
-                          //         borderRadius: BorderRadius.circular(30),
-                          //         color: Color(0xff303030),
-                          //         boxShadow: [
-                          //           BoxShadow(
-                          //             color: Colors.grey[800],
-                          //             //color: Colors.grey.withOpacity(0.5),
-                          //             spreadRadius: 4,
-                          //             blurRadius: 4,
-                          //             offset: Offset(0, 0), // changes position of shadow
-                          //           ),
-                          //         ],
-                          //         border: Border.all(
-                          //           width: 2,
-                          //           color: Colors.cyan[800],
-                          //         ),
-                          //       ),
-                          //       child : Row(
-                          //         mainAxisAlignment: MainAxisAlignment.center,
-                          //         children: [
-                          //           Padding(
-                          //             padding: const EdgeInsets.only(bottom : 10.0 , top : 10.0),
-                          //             child: Text("LOGIN WITH GITHUB"),
-                          //           ),
-                          //         ],)
-                          //   ),
-                          // ),
                         ],
                       ),
                     ),
@@ -487,69 +426,6 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             ),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(bottom : 10.0 , top : 10.0),
-                            child: Container(
-                                width: _width*0.65,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(30),
-                                  color: Color(0xff303030),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey[800],
-                                      //color: Colors.grey.withOpacity(0.5),
-                                      spreadRadius: 4,
-                                      blurRadius: 4,
-                                      offset: Offset(0, 0), // changes position of shadow
-                                    ),
-                                  ],
-                                  border: Border.all(
-                                    width: 2,
-                                    color: Colors.cyan[800],
-                                  ),
-                                ),
-                                child : Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Image.asset('assets/images/facebook_logo.png',height: _height*0.07,width: _width*0.07,),
-                                    Padding(
-                                      padding: const EdgeInsets.only(bottom : 10.0 , top : 10.0),
-                                      child: Text("SIGNUP WITH FACEBOOK"),
-                                    ),
-                                  ],)
-                            ),
-                          ),
-                          // Padding(
-                          //   padding: const EdgeInsets.only(bottom : 10.0 , top : 10.0),
-                          //   child: Container(
-                          //       width: _width*0.7,
-                          //       decoration: BoxDecoration(
-                          //         borderRadius: BorderRadius.circular(30),
-                          //         color: Color(0xff303030),
-                          //         boxShadow: [
-                          //           BoxShadow(
-                          //             color: Colors.grey[800],
-                          //             //color: Colors.grey.withOpacity(0.5),
-                          //             spreadRadius: 4,
-                          //             blurRadius: 4,
-                          //             offset: Offset(0, 0), // changes position of shadow
-                          //           ),
-                          //         ],
-                          //         border: Border.all(
-                          //           width: 2,
-                          //           color: Colors.cyan[800],
-                          //         ),
-                          //       ),
-                          //       child : Row(
-                          //         mainAxisAlignment: MainAxisAlignment.center,
-                          //         children: [
-                          //           Padding(
-                          //             padding: const EdgeInsets.only(bottom : 10.0 , top : 10.0),
-                          //             child: Text("SIGNUP WITH GITHUB"),
-                          //           ),
-                          //         ],)
-                          //   ),
-                          // ),
                         ],
                       ),
                     ),
@@ -564,7 +440,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
   void performLogin()
   {
-    _repository.signIn().then((User user)
+    _repository.signInWithGoogle().then((User user)
     {
       if(user != null)
         {

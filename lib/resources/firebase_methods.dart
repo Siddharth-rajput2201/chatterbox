@@ -13,34 +13,69 @@ class FirebaseMethods
 
   Future<User> getCurrentUser() async
   {
-    User currentUser;
-    currentUser = _auth.currentUser;
-    print(currentUser.uid);
-    return currentUser;
+    try {
+      User currentUser;
+      currentUser = _auth.currentUser;
+      print(currentUser.uid);
+      return currentUser;
+    }
+    catch(error)
+    {
+      print(error);
+    }
   }
 
-  Future<User> signIn() async
+  Future<bool> checkCurrentUserId() async
   {
-    GoogleSignInAccount _signInAccount = await _googleSignIn.signIn(); // Calls box for email in google account
-    GoogleSignInAuthentication _signInAuthentication = await _signInAccount.authentication; // authentication creadentials for google
+    User currentUser;
+    currentUser = _auth.currentUser;
+    if(currentUser.uid != null)
+    {
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+  }
 
-    final AuthCredential credential  = GoogleAuthProvider.credential(
-      accessToken: _signInAuthentication.accessToken, // takes the required credentials
-      idToken:  _signInAuthentication.idToken,
-    );
-    UserCredential _userCredential = await _auth.signInWithCredential(credential);
-    User user = _userCredential.user;
-    print(user.uid);
-    return user;
+  Future<User> signInWithGoogle() async
+  {
+    try {
+      GoogleSignInAccount _signInAccount = await _googleSignIn
+          .signIn(); // Calls box for email in google account
+      GoogleSignInAuthentication _signInAuthentication = await _signInAccount
+          .authentication; // authentication creadentials for google
+
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: _signInAuthentication.accessToken,
+        // takes the required credentials
+        idToken: _signInAuthentication.idToken,
+      );
+      UserCredential _userCredential = await _auth.signInWithCredential(
+          credential);
+      User user = _userCredential.user;
+      print(user.uid);
+      return user;
+    }
+    catch(error)
+    {
+      print(error);
+    }
   }
 
   Future<bool> authenticateUser(User user) async
   {
-    QuerySnapshot result = await firebaseFirestore
-    .collection("users")
-    .where("email", isEqualTo: user.email).get();
-    final List<DocumentSnapshot> docs = result.docs;
-    return docs.length == 0 ? true : false;
+    try {
+      QuerySnapshot result = await firebaseFirestore
+          .collection("users")
+          .where("email", isEqualTo: user.email).get();
+      final List<DocumentSnapshot> docs = result.docs;
+      return docs.length == 0 ? true : false;
+    }
+    catch(error){
+      print(error);
+    }
   }
 
   Future<void> addDataToDb(User user) async{
@@ -51,13 +86,21 @@ class FirebaseMethods
 
   Future<void> signOutUser() async {
   //  User user = await getCurrentUser();
-    if(await _googleSignIn.isSignedIn() == false) {
-      await _googleSignIn.disconnect();
-      await _googleSignIn.signOut();
+    try {
+      if (await _googleSignIn.isSignedIn() == false) {
+        await _googleSignIn.disconnect();
+        await _googleSignIn.signOut();
+      }
+      return await _auth.signOut();
     }
-    return await _auth.signOut();
+    catch(error)
+    {
+      print(error);
+    }
   }
-    // print(user.providerData[1].providerId);
+
+
+  // print(user.providerData[1].providerId);
     // print(user.uid);
     // print(user.providerData[1].providerId);
     // if (user.providerData[1].providerId == 'google.com') {

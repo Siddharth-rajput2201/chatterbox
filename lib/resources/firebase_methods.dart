@@ -2,10 +2,10 @@ import 'package:chatterbox/models/user.dart';
 import 'package:chatterbox/utils/utilitizes.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-class FirebaseMethods
-{
+class FirebaseMethods {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   GoogleSignIn _googleSignIn = GoogleSignIn();
   static final FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
@@ -19,9 +19,9 @@ class FirebaseMethods
       print(currentUser.uid);
       return currentUser;
     }
-    catch(error)
-    {
+    catch (error) {
       print(error);
+      return Future.value(null);
     }
   }
 
@@ -29,13 +29,11 @@ class FirebaseMethods
   {
     User currentUser;
     currentUser = _auth.currentUser;
-    if(currentUser.uid != null)
-    {
-      return true;
+    if (currentUser.uid != null) {
+      return Future.value(true);
     }
-    else
-    {
-      return false;
+    else {
+      return Future.value(false);
     }
   }
 
@@ -58,9 +56,9 @@ class FirebaseMethods
       print(user.uid);
       return user;
     }
-    catch(error)
-    {
+    catch (error) {
       print(error);
+      return Future.value(null);
     }
   }
 
@@ -73,33 +71,63 @@ class FirebaseMethods
       final List<DocumentSnapshot> docs = result.docs;
       return docs.length == 0 ? true : false;
     }
-    catch(error){
+    catch (error) {
       print(error);
+      return Future.value(null);
     }
   }
 
-  Future<void> addDataToDb(User user) async{
+  Future<void> addDataToDb(User user) async {
     String username = Utils.getUsername(user.email);
-    modelUser = ModelUser(user.uid, user.displayName, user.email, username, null, null, user.photoURL);
-    firebaseFirestore.collection("users").doc(user.uid).set(modelUser.toMap(modelUser));
+    modelUser = ModelUser(
+        user.uid,
+        user.displayName,
+        user.email,
+        username,
+        null,
+        null,
+        user.photoURL);
+    firebaseFirestore.collection("users").doc(user.uid).set(
+        modelUser.toMap(modelUser));
   }
 
   Future<void> signOutUser() async {
-  //  User user = await getCurrentUser();
+    //  User user = await getCurrentUser();
     try {
-      if (await _googleSignIn.isSignedIn() == false) {
-        await _googleSignIn.disconnect();
-        await _googleSignIn.signOut();
+      if (await _googleSignIn.isSignedIn() == true) {
+      await _googleSignIn.disconnect();
+      await _googleSignIn.signOut();
       }
       return await _auth.signOut();
     }
-    catch(error)
-    {
+    catch (error) {
       print(error);
     }
   }
 
+  Future<User> signUpWithEmailAndPassword(String signUpEmail,
+      String signUpPassword, BuildContext context) async
+  {
+    try {
+      UserCredential _signUpUser = await _auth.signInWithEmailAndPassword(
+          email: signUpEmail, password: signUpPassword);
+      User user = _signUpUser.user;
+      return Future.value(user);
+    }
+    catch (error) {
+      print(error.code);
+        switch (error.code)
+        {
+          case 'ERROR_EMAIL_ALREADY_IN_USE':
+            SnackBar(content: Text(error),);
+            break;
+        }
+        return Future.value(null);
+    }
+  }
 
+
+}
   // print(user.providerData[1].providerId);
     // print(user.uid);
     // print(user.providerData[1].providerId);
@@ -116,4 +144,3 @@ class FirebaseMethods
     //   }
     //    await _auth.signOut();
     //return Future.value(true);
-}

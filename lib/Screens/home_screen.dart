@@ -9,10 +9,12 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       body: Center(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text("Home Screen"),
             RaisedButton(child: Text("SIGNOUT"),onPressed: ()
-            => _firebaseRepository.signOutUser().whenComplete(() => Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context)=>LoginScreen()), (Route<dynamic>route) => false))
+            => _firebaseRepository.signOutUser()
+                //.whenComplete(() => Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context)=>LoginScreen()), (Route<dynamic>route) => false))
             )],
         ),
       ),

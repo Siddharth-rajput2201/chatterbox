@@ -17,7 +17,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
   FirebaseRepository _repository = FirebaseRepository();
 
   @override
@@ -26,22 +25,43 @@ class _MyAppState extends State<MyApp> {
     //   "name":"The Noob"
     // });
     return MaterialApp(
-      darkTheme: ThemeData(brightness: Brightness.dark,),
-      themeMode: ThemeMode.dark,
-      debugShowCheckedModeBanner: false,
-      home:  FutureBuilder(
-        future: _repository.getCurrentUser(),
-        builder: (context,AsyncSnapshot<User> snapshot){
-          if(snapshot.hasData)
-            {
+        darkTheme: ThemeData(
+          brightness: Brightness.dark,
+        ),
+        themeMode: ThemeMode.dark,
+        debugShowCheckedModeBanner: false,
+        // home:  FutureBuilder(
+        //   future: _repository.getCurrentUser(),
+        //   builder: (context,AsyncSnapshot<User> snapshot){
+        //     if(snapshot.hasData)
+        //       {
+        //         return HomeScreen();
+        //       }
+        //     else
+        //       {
+        //         return LoginScreen();
+        //       }
+        //     },
+        home: LandingPage());
+  }
+}
+
+class LandingPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<User>(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context, AsyncSnapshot<User> snapshot) {
+
+            if (snapshot.hasData) {
+              //print("USER ID IF USER IS NOT NULL :  " + user.uid);
               return HomeScreen();
-            }
-          else
-            {
+            } else {
+              //print("USER ID IF THE USER IS NULL :  " + user.uid);
               return LoginScreen();
             }
-          },
-      )
+      },
     );
   }
 }
+

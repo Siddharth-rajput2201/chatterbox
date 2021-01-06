@@ -440,22 +440,23 @@ class _LoginScreenState extends State<LoginScreen> {
   }
   void performLogin()
   {
-    _repository.signInWithGoogle().then((User user)
-    {
-      if(user != null)
-        {
-          Navigator.pushReplacement(context, MaterialPageRoute(builder:(context)
-          {
-            return HomeScreen();
-          }));
-          //authenticateUser(user);
-        }
-      else
-        {
-          print("THERE WAS AN ERROR ");
-        }
-
-    });
+    //_repository.signInWithGoogle().then((User user)
+    _repository.signInWithGoogle();
+    // {
+    //   if(user != null)
+    //     {
+    //       Navigator.pushReplacement(context, MaterialPageRoute(builder:(context)
+    //       {
+    //         return HomeScreen();
+    //       }));
+    //       //authenticateUser(user);
+    //     }
+    //   else
+    //     {
+    //       print("THERE WAS AN ERROR ");
+    //     }
+    //
+    // });
   }
 
   void toggleIcon()

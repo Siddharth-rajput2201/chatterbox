@@ -1,6 +1,6 @@
 import 'package:chatterbox/Screens/home_screen.dart';
 import 'package:chatterbox/Screens/login_screen.dart';
-import 'package:chatterbox/resources/firebase_repository.dart';
+//import 'package:chatterbox/resources/firebase_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +17,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  FirebaseRepository _repository = FirebaseRepository();
+  //FirebaseRepository _repository = FirebaseRepository();
 
   @override
   Widget build(BuildContext context) {

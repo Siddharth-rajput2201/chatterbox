@@ -1,6 +1,6 @@
 import 'package:chatterbox/resources/firebase_repository.dart';
 import 'package:flutter/material.dart';
-import 'package:chatterbox/Screens/login_screen.dart';
+//import 'package:chatterbox/Screens/login_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   final FirebaseRepository _firebaseRepository = FirebaseRepository();

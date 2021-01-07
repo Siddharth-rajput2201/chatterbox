@@ -10,4 +10,5 @@ class FirebaseRepository
   Future<void> addDataToDb(User user) => _firebaseMethods.addDataToDb(user);
   Future<void> signOutUser() =>_firebaseMethods.signOutUser();
   Future<bool> checkCurrentUserID() => _firebaseMethods.checkCurrentUserId();
+  Future<User> signUpWithEmailAndPassword(signUpEmail, signUpPassword, context) =>_firebaseMethods.signUpWithEmailAndPassword(signUpEmail, signUpPassword, context);
 }

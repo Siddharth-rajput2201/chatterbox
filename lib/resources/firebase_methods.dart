@@ -1,4 +1,5 @@
 import 'package:chatterbox/models/user.dart';
+import 'package:chatterbox/utils/errorDisplayWidgets.dart';
 import 'package:chatterbox/utils/utilitizes.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -109,8 +110,9 @@ class FirebaseMethods {
       String signUpPassword, BuildContext context) async
   {
     try {
-      UserCredential _signUpUser = await _auth.signInWithEmailAndPassword(
+      UserCredential _signUpUser = await _auth.createUserWithEmailAndPassword(
           email: signUpEmail, password: signUpPassword);
+
       User user = _signUpUser.user;
       return Future.value(user);
     }
@@ -118,8 +120,20 @@ class FirebaseMethods {
       print(error.code);
         switch (error.code)
         {
-          case 'ERROR_EMAIL_ALREADY_IN_USE':
-            SnackBar(content: Text(error),);
+          case 'invalid-email':
+            showErrorSnackbar(context, "INVALID EMAIL");
+            break;
+          case 'email-already-in-use':
+            showErrorSnackbar(context, "EMAIL ALREADY IN USE ! PLEASE LOGIN IN");
+            break;
+          case 'operation-not-allowed':
+            showErrorSnackbar(context, "AN ERROR OCCURED!PLEASE TRY AGAIN LATER");
+            break;
+          case 'weak-password':
+            showErrorSnackbar(context, "WEAK PASSWORD.TRY USING : \n 1) SPECIAL CHARACTER(example : !@#%^*) \n 2) CAPITAL LETTERS \n 3) NUMBER");
+            break;
+          case 'network-request-failed':
+            showErrorSnackbar(context, "PLEASE CHECK YOUR INTERNET CONNECTION");
             break;
         }
         return Future.value(null);

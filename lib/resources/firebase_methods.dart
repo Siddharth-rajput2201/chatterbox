@@ -4,6 +4,7 @@ import 'package:chatterbox/utils/utilitizes.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class FirebaseMethods {
@@ -38,7 +39,7 @@ class FirebaseMethods {
     }
   }
 
-  Future<User> signInWithGoogle() async
+  Future<User> signInWithGoogle(BuildContext context) async
   {
     try {
       GoogleSignInAccount _signInAccount = await _googleSignIn
@@ -57,8 +58,32 @@ class FirebaseMethods {
       print(user.uid);
       return user;
     }
+
+    on PlatformException catch (PlatformError)
+    {
+      print(PlatformError);
+      {
+        showErrorSnackbar(context, "SIGNUP/LOGIN FAILED");
+      }
+      return Future.value(null);
+    }
+
+    on NoSuchMethodError catch (noSuchMethodError)
+    {
+      print(noSuchMethodError);
+      {
+        showErrorSnackbar(context, "SIGNUP/LOGIN FAILED");
+      }
+      return Future.value(null);
+    }
+
     catch (error) {
-      print(error);
+      switch(error.code)
+      {
+        case 'network_error':
+          showErrorSnackbar(context, "CHECK YOUR INTERNET CONNECTIVITY");
+          break;
+      }
       return Future.value(null);
     }
   }
@@ -139,6 +164,42 @@ class FirebaseMethods {
         return Future.value(null);
     }
   }
+
+
+  Future<User> signInWithEmailAndPassword(String signUpEmail,
+      String signUpPassword, BuildContext context) async
+  {
+    try {
+      UserCredential _signUpUser = await _auth.signInWithEmailAndPassword(
+          email: signUpEmail, password: signUpPassword);
+
+      User user = _signUpUser.user;
+      return Future.value(user);
+    }
+    catch (error) {
+      print(error.code);
+      switch (error.code)
+      {
+        case 'invalid-email':
+          showErrorSnackbar(context, "INVALID EMAIL");
+          break;
+        case 'email-already-in-use':
+          showErrorSnackbar(context, "EMAIL ALREADY IN USE ! PLEASE LOGIN IN");
+          break;
+        case 'operation-not-allowed':
+          showErrorSnackbar(context, "AN ERROR OCCURED!PLEASE TRY AGAIN LATER");
+          break;
+        case 'weak-password':
+          showErrorSnackbar(context, "WEAK PASSWORD.TRY USING : \n 1) SPECIAL CHARACTER(example : !@#%^*) \n 2) CAPITAL LETTERS \n 3) NUMBER");
+          break;
+        case 'network-request-failed':
+          showErrorSnackbar(context, "PLEASE CHECK YOUR INTERNET CONNECTION");
+          break;
+      }
+      return Future.value(null);
+    }
+  }
+
 
 
 }

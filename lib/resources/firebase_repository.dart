@@ -5,10 +5,11 @@ class FirebaseRepository
 {
   FirebaseMethods _firebaseMethods = FirebaseMethods();
   Future<User> getCurrentUser() => _firebaseMethods.getCurrentUser();
-  Future<User> signInWithGoogle() => _firebaseMethods.signInWithGoogle();
+  Future<User> signInWithGoogle(context) => _firebaseMethods.signInWithGoogle(context);
   Future<bool> authenticateUser(User user) => _firebaseMethods.authenticateUser(user);
   Future<void> addDataToDb(User user) => _firebaseMethods.addDataToDb(user);
   Future<void> signOutUser() =>_firebaseMethods.signOutUser();
   Future<bool> checkCurrentUserID() => _firebaseMethods.checkCurrentUserId();
   Future<User> signUpWithEmailAndPassword(signUpEmail, signUpPassword, context) =>_firebaseMethods.signUpWithEmailAndPassword(signUpEmail, signUpPassword, context);
+  Future<User> signInWithEmailAndPassword(signUpEmail, signUpPassword, context) =>_firebaseMethods.signInWithEmailAndPassword(signUpEmail, signUpPassword, context);
 }

@@ -13,11 +13,17 @@ class HomeScreen extends StatelessWidget {
           children: [
             Text("Home Screen"),
             RaisedButton(child: Text("SIGNOUT"),onPressed: ()
-            => _firebaseRepository.signOutUser()
+            => signOutUser()
                 //.whenComplete(() => Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context)=>LoginScreen()), (Route<dynamic>route) => false))
             )],
         ),
       ),
     );
   }
+
+  Future<void> signOutUser() async
+  {
+    await _firebaseRepository.signOutUser();
+  }
+
 }

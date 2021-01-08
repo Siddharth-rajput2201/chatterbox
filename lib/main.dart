@@ -52,7 +52,6 @@ class LandingPage extends StatelessWidget {
     return StreamBuilder<User>(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, AsyncSnapshot<User> snapshot) {
-
             if (snapshot.hasData) {
               //print("USER ID IF USER IS NOT NULL :  " + user.uid);
               return HomeScreen();

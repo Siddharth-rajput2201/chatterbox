@@ -24,7 +24,9 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _secureTextSignUpPassword = true;
   bool _secureTextSignUpCofirmPassword = true;
   bool _displaySignUpButton = true;
+  bool _displaySignInButton = true;
   bool _displayGoogleSignUp = true;
+  bool _displayGoogleSignIn = true;
   TextEditingController _emailController = TextEditingController();
   TextEditingController _signUpEmailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
@@ -172,7 +174,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     ),
                                   ),
                                   GestureDetector(
-                                    onTap: ()=>{validateFormFeild()},
+                                    onTap: ()=>{validateSignInFormFeild()},
                                     child: Container(
                                       width: _width*0.30,
                                       decoration: BoxDecoration(
@@ -207,9 +209,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           children: [
                             Padding(
                               padding: const EdgeInsets.only(bottom : 10.0),
-                              child: GestureDetector(
+                              child: _displayGoogleSignIn? GestureDetector(
                                 onTap: ()=> {
-                                  performGoogleLogin()
+                                  performGoogleLogin(context)
                                 },
                                 child: Container(
                                   width: _width*0.65,
@@ -240,7 +242,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     ),
                                   ],)
                                 ),
-                              ),
+                              ):CircularProgressIndicator(),
                             ),
                           ],
                         ),
@@ -413,7 +415,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             Padding(
                               padding: const EdgeInsets.only(bottom : 10.0),
                               child: _displayGoogleSignUp ? GestureDetector(
-                                onTap: ()=>{performGoogleLogin()},
+                                onTap: ()=>{performGoogleSignUp(context)},
                                 child: Container(
                                     width: _width*0.65,
                                     decoration: BoxDecoration(
@@ -458,17 +460,28 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
-  Future<void> performGoogleLogin() async
+  Future<void> performGoogleSignUp(BuildContext context) async
   {
     setState(() {
       _displayGoogleSignUp = false;
     });
     //_repository.signInWithGoogle().then((User user)
-    await _repository.signInWithGoogle();
+    await _repository.signInWithGoogle(context);
+    if(mounted) {
+      setState(() {
+        _displayGoogleSignUp = true;
+      });
+    }
 
-    setState(() {
-      _displayGoogleSignUp = true;
-    });
+
+
+    // if(user == null)
+    //   {
+    //     setState(() {
+    //       _displayGoogleSignUp = true;
+    //     });
+    //     showErrorSnackbar(context, "ERROR");
+    //   }
     // {
     //   if(user != null)
     //     {
@@ -484,6 +497,19 @@ class _LoginScreenState extends State<LoginScreen> {
     //     }
     //
     // });
+  }
+  Future<void> performGoogleLogin(BuildContext context) async
+  {
+    setState(() {
+      _displayGoogleSignIn = false;
+    });
+    //_repository.signInWithGoogle().then((User user)
+    await _repository.signInWithGoogle(context);
+
+
+    setState(() {
+      _displayGoogleSignIn = true;
+    });
   }
 
   void toggleIcon()
@@ -506,11 +532,12 @@ class _LoginScreenState extends State<LoginScreen> {
       _secureTextSignUpCofirmPassword=!_secureTextSignUpCofirmPassword;
     });
   }
-  void validateFormFeild()
+  void validateSignInFormFeild()
   {
     setState(() {
       _logInFormKey.currentState.validate();
     });
+
   }
 
   Future<void> validateSignUpFormFeild  (String signUpEmail ,String signUpPassword , BuildContext context ) async

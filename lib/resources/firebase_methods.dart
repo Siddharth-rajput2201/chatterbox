@@ -222,6 +222,18 @@ class FirebaseMethods {
     }
   }
 
+  Future<void> forgerPassword(String email,BuildContext context) async
+  {
+    try {
+      return _auth.sendPasswordResetEmail(email: email);
+    }
+    catch(error)
+    {
+      showErrorSnackbar(context, "ERROR");
+    }
+  }
+
+
 
 
 }

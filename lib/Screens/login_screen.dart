@@ -36,10 +36,10 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController _confirmSignUpPasswordController = TextEditingController();
   final _logInFormKey = GlobalKey<FormState>();
   final _signUpFormKey = GlobalKey<FormState>();
-  String signUpEmail;
-  String signUpPassword;
-  String signInEmail;
-  String signInPassword;
+  String _signUpEmail;
+  String _signUpPassword;
+  String _signInEmail;
+  String _signInPassword;
 
   @override
   Widget build(BuildContext context) {
@@ -52,389 +52,191 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget loginSignup(bool secureText, double _width , double _height) {
     return DefaultTabController(
       length: 2,
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Color(0xff303030),
-          elevation: 0,
-          toolbarHeight: 75,
-          bottom: TabBar(
-            unselectedLabelColor: Colors.cyan[700],
-            indicatorSize: TabBarIndicatorSize.label,
-            indicator: BoxDecoration(
-                borderRadius: BorderRadius.circular(50),
-                color: Colors.cyan[700],
-            ),
-            tabs: [
-              Tab(
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(50),
-                    border: Border.all(
-                        width: 2,
-                      color: Colors.cyan[700],
+      child: SafeArea(
+        top: true,
+        bottom: true,
+        child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Color(0xff303030),
+            elevation: 0,
+            toolbarHeight: 75,
+            bottom: TabBar(
+              unselectedLabelColor: Colors.cyan[700],
+              indicatorSize: TabBarIndicatorSize.label,
+              indicator: BoxDecoration(
+                  borderRadius: BorderRadius.circular(50),
+                  color: Colors.cyan[700],
+              ),
+              tabs: [
+                Tab(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(50),
+                      border: Border.all(
+                          width: 2,
+                        color: Colors.cyan[700],
+                      ),
+                    ),
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Text("LOGIN"),
                     ),
                   ),
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: Text("LOGIN"),
+                ),
+                Tab(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(50),
+                      border: Border.all(
+                          width: 2,
+                        color: Colors.cyan[700],),
+                    ),
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Text("SIGNUP"),
+                    ),
                   ),
                 ),
-              ),
-              Tab(
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(50),
-                    border: Border.all(
-                        width: 2,
-                      color: Colors.cyan[700],),
-                  ),
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: Text("SIGNUP"),
-                  ),
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-        body: Builder(
-          builder: (context)=>
-           TabBarView(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      Container(
-                        margin: EdgeInsets.only(top:20),
-                        decoration: BoxDecoration(
-                          color:Colors.grey[800],
-                          borderRadius: BorderRadius.circular(20)
-                        ),
-                        child:
-                          Padding(
-                            padding: const EdgeInsets.all(20.0),
-                            child: Form(
-                              key: _logInFormKey,
-                              child: Column(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: TextFormField(
-                                      enabled: _disableSignInFormFeild,
-                                      validator: (String emailText) {
-                                        if(!emailText.contains("@") )
-                                        {
-                                         return "INVALID EMAIL";
-                                        }
-                                        else if(emailText.length>30)
-                                        {
-                                          return "INVALID EMAIL";
-                                        }
-                                        else if(!emailText.contains("."))
-                                        {
-                                          return "INVALID EMAIL";
-                                        }
-                                        else
-                                        {
-                                          return null;
-                                        }
-                                      }  ,
-                                      onChanged: (_val) {
-                                        signInEmail = _val;
-                                      },
-                                      controller: _emailController,
-                                      decoration: InputDecoration(
-                                        hintText: "EXAMPLE@EMAIL.COM",
-                                        labelText: "EMAIL",
-                                        border: OutlineInputBorder(),
-                                      ),
-                                      maxLength: 30,
-                                      keyboardType: TextInputType.emailAddress,
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: TextFormField(
-                                      enabled: _disableSignInFormFeild,
-                                      validator: (String passwordText) {
-                                        if(passwordText.isEmpty)
-                                        {
-                                          return "Password Can't Be Empty";
-                                        }
-                                        else
-                                        {
-                                          return null;
-                                        }
-                                      }  ,
-                                      onChanged: (_val) {
-                                        signInPassword = _val;
-                                      },
-                                      controller: _passwordController,
-                                      decoration: InputDecoration(
-                                        hintText: "PASSWORD",
-                                        labelText: "PASSWORD",
-                                        border: OutlineInputBorder(),
-                                        suffixIcon: IconButton(icon : Icon( _secureText? Icons.remove_red_eye : Icons.security),
-                                        onPressed: ()=>{
-                                          toggleIcon()
-                                        },),
-                                      ),
-                                      obscureText: _secureText,
-                                      maxLength: 20,
-                                    ),
-                                  ),
-                                  _displaySignInButton?GestureDetector(
-                                    onTap: ()=>{validateSignInFormFeild(signInEmail,signInPassword,context)},
-                                    child: Container(
-                                      width: _width*0.30,
-                                      decoration: BoxDecoration(
-                                        color: Colors.cyan,
-                                        borderRadius: BorderRadius.circular(30),
-                                        border: Border.all(
-                                          width: 2,
-                                          color: Colors.cyan[800],
-                                        ),
-                                      ),
-                                      child: Align(
-                                        alignment: Alignment.center,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(15.0),
-                                          child: Text("LOGIN"),
-                                        ),
-                                      ),
-                                    ),
-                                  ):CircularProgressIndicator(),
-                                ],
-                              ),
-                            ),
-                          )
-                      ),
-                      SizedBox(height: 10,),
-
-                      Text("OR",style: TextStyle(fontSize: 17),),
-
-                      Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(bottom : 10.0),
-                              child: _displayGoogleSignIn? GestureDetector(
-                                onTap: ()=> {
-                                  performGoogleLogin(context)
-                                },
-                                child: Container(
-                                  width: _width*0.65,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(30),
-                                    color: Color(0xff303030),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.grey[800],
-                                        //color: Colors.grey.withOpacity(0.5),
-                                        spreadRadius: 4,
-                                        blurRadius: 4,
-                                        offset: Offset(0, 0), // changes position of shadow
-                                      ),
-                                    ],
-                                    border: Border.all(
-                                      width: 2,
-                                      color: Colors.cyan[800],
-                                    ),
-                                  ),
-                                  child : Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                    Image.asset('assets/images/google_logo.png',height: _height*0.07,width: _width*0.07,),
-                                    Padding(
-                                      padding: const EdgeInsets.only(bottom : 10.0 , top : 10.0),
-                                      child: Text("LOGIN WITH GOOGLE"),
-                                    ),
-                                  ],)
-                                ),
-                              ):CircularProgressIndicator(),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-             // Icon(Icons.apps),
-
-
-              /* SIGN UP */
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      Container(
+          body: Builder(
+            builder: (context)=>
+             TabBarView(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        Container(
                           margin: EdgeInsets.only(top:20),
                           decoration: BoxDecoration(
-                              color:Colors.grey[800],
-                              borderRadius: BorderRadius.circular(20)
+                            color:Colors.grey[800],
+                            borderRadius: BorderRadius.circular(20)
                           ),
                           child:
-                          Padding(
-                            padding: const EdgeInsets.all(20.0),
-                            child: Form(
-                              key: _signUpFormKey,
-                              child: Column(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: TextFormField(
-                                      enabled: _disableSignUpFormFeild,
-                                      validator: (String signUpEmailText) {
-                                        if(!signUpEmailText.contains("@"))
-                                        {
-                                          return "INVALID EMAIL";
-                                        }
-                                        else if(!signUpEmailText.contains("."))
-                                        {
-                                          return "INVALID EMAIL";
-                                        }
-                                        else if(signUpEmailText.length>30)
-                                        {
-                                          return "INVALID EMAIL";
-                                        }
-                                        else if(signUpEmailText.length<3)
-                                        {
-                                          return "INVALID EMAIL";
-                                        }
-                                        else
-                                        {
-                                          return null;
-                                        }
-                                      }  ,
-                                      onChanged: (_val) {
-                                        signUpEmail = _val;
-                                      },
-                                      controller: _signUpEmailController,
-                                      decoration: InputDecoration(
-                                        hintText: "EXAMPLE@EMAIL.COM",
-                                        labelText: "EMAIL",
-                                        border: OutlineInputBorder(),
-                                      ),
-                                      maxLength: 30,
-                                      keyboardType: TextInputType.emailAddress,
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: TextFormField(
-                                      enabled: _disableSignUpFormFeild,
-                                      validator: (String signUpPasswordText) {
-                                        if(signUpPasswordText.length>20)
-                                        {
-                                          return "Password Length To Short";
-                                        }
-                                        else if(signUpPasswordText.length<8)
-                                        {
-                                          return "TOO SHORT MINIMUM SIZE 8 ";
-                                        }
-                                        else
-                                        {
-                                          return null;
-                                        }
-                                      }  ,
-                                      controller: _signUpPasswordController,
-                                      decoration: InputDecoration(
-                                        hintText: "PASSWORD",
-                                        labelText: "PASSWORD",
-                                        border: OutlineInputBorder(),
-                                        suffixIcon: IconButton(icon : Icon( _secureTextSignUpPassword? Icons.remove_red_eye : Icons.security),
-                                          onPressed: ()=>{
-                                            toggleIconSignUpPassword()
-                                          },),
-                                      ),
-                                      obscureText: _secureTextSignUpPassword,
-                                      maxLength: 20,
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: TextFormField(
-                                      enabled: _disableSignUpFormFeild,
-                                      validator: (String confirmPasswordText) {
-                                        if(confirmPasswordText.length>20)
-                                        {
-                                          return "Password Length To Short";
-                                        }
-
-                                        else if(_signUpPasswordController.text != _confirmSignUpPasswordController.text)
-                                        {
-                                          return "PASSWORD DOES NOT MATCH";
-                                        }
-                                        else
-                                        {
-                                          return null;
-                                        }
-                                      }  ,
-                                      onChanged: (_val){
-                                        signUpPassword = _val;
-                                      },
-                                      controller: _confirmSignUpPasswordController,
-                                      decoration: InputDecoration(
-                                        hintText: "CONFIRM PASSWORD",
-                                        labelText: "CONFIRM PASSWORD",
-                                        border: OutlineInputBorder(),
-                                        suffixIcon: IconButton(icon : Icon( _secureTextSignUpCofirmPassword? Icons.remove_red_eye : Icons.security),
-                                          onPressed: ()=>{
-                                            toggleIconSignUpConfirmPassword()
-                                          },),
-                                      ),
-                                      obscureText: _secureTextSignUpCofirmPassword,
-                                      maxLength: 20,
-                                    ),
-                                  ),
-                                  _displaySignUpButton ? GestureDetector(
-                                    onTap: ()=>{
-                                      validateSignUpFormFeild(signUpEmail,signUpPassword,context)
-                                    },
-                                    child: Container(
-                                      width: _width*0.30,
-                                      decoration: BoxDecoration(
-                                        color: Colors.cyan,
-                                        borderRadius: BorderRadius.circular(30),
-                                        border: Border.all(
-                                          width: 2,
-                                          color: Colors.cyan[800],
-                                        ),
-                                      ),
-                                      child: Align(
-                                        alignment: Alignment.center,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(15.0),
-                                              child: Text("SIGN UP"),
-                                        ),
-                                      ),
-                                    ),
-                                  ):CircularProgressIndicator(),
-                                ],
-                              ),
-                            ),
-                          )
-                      ),
-                      SizedBox(height: 10,),
-                      Text("OR",style: TextStyle(fontSize: 17),),
-                      Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Column(
-                          children: [
                             Padding(
-                              padding: const EdgeInsets.only(bottom : 10.0),
-                              child: _displayGoogleSignUp ? GestureDetector(
-                                onTap: ()=>{performGoogleSignUp(context)},
-                                child: Container(
+                              padding: const EdgeInsets.all(20.0),
+                              child: Form(
+                                key: _logInFormKey,
+                                child: Column(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: TextFormField(
+                                        enabled: _disableSignInFormFeild,
+                                        validator: (String emailText) {
+                                          if(!emailText.contains("@") )
+                                          {
+                                           return "INVALID EMAIL";
+                                          }
+                                          else if(emailText.length>30)
+                                          {
+                                            return "INVALID EMAIL";
+                                          }
+                                          else if(!emailText.contains("."))
+                                          {
+                                            return "INVALID EMAIL";
+                                          }
+                                          else
+                                          {
+                                            return null;
+                                          }
+                                        }  ,
+                                        onChanged: (_val) {
+                                          _signInEmail = _val;
+                                        },
+                                        controller: _emailController,
+                                        decoration: InputDecoration(
+                                          hintText: "EXAMPLE@EMAIL.COM",
+                                          labelText: "EMAIL",
+                                          border: OutlineInputBorder(),
+                                        ),
+                                        maxLength: 50,
+                                        keyboardType: TextInputType.emailAddress,
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: TextFormField(
+                                        enabled: _disableSignInFormFeild,
+                                        validator: (String passwordText) {
+                                          if(passwordText.isEmpty)
+                                          {
+                                            return "PASSWORD CAN'T BE EMPTY";
+                                          }
+                                          else
+                                          {
+                                            return null;
+                                          }
+                                        }  ,
+                                        onChanged: (_val) {
+                                          _signInPassword = _val;
+                                        },
+                                        controller: _passwordController,
+                                        decoration: InputDecoration(
+                                          hintText: "PASSWORD",
+                                          labelText: "PASSWORD",
+                                          border: OutlineInputBorder(),
+                                          suffixIcon: IconButton(icon : Icon( _secureText? Icons.remove_red_eye : Icons.security),
+                                          onPressed: ()=>{
+                                            toggleIcon()
+                                          },),
+                                        ),
+                                        obscureText: _secureText,
+                                        maxLength: 20,
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 5,bottom: 20.0),
+                                      child: Text("FORGET PASSWORD ? ",style: TextStyle(color: Colors.blue),),
+                                    ),
+                                    _displaySignInButton?GestureDetector(
+                                      onTap: ()=>{validateSignInFormFeild(_signInEmail,_signInPassword,context)},
+                                      child: Container(
+                                        width: _width*0.30,
+                                        decoration: BoxDecoration(
+                                          color: Colors.cyan,
+                                          borderRadius: BorderRadius.circular(30),
+                                          border: Border.all(
+                                            width: 2,
+                                            color: Colors.cyan[800],
+                                          ),
+                                        ),
+                                        child: Align(
+                                          alignment: Alignment.center,
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(15.0),
+                                            child: Text("LOGIN"),
+                                          ),
+                                        ),
+                                      ),
+                                    ):CircularProgressIndicator(),
+                                  ],
+                                ),
+                              ),
+                            )
+                        ),
+                        SizedBox(height: 10,),
+
+                        Text("OR",style: TextStyle(fontSize: 17),),
+
+                        Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(bottom : 10.0),
+                                child: _displayGoogleSignIn? GestureDetector(
+                                  onTap: ()=> {
+                                    performGoogleLogin(context)
+                                  },
+                                  child: Container(
                                     width: _width*0.65,
                                     decoration: BoxDecoration(
-                                      color: Color(0xff303030),
                                       borderRadius: BorderRadius.circular(30),
+                                      color: Color(0xff303030),
                                       boxShadow: [
                                         BoxShadow(
                                           color: Colors.grey[800],
@@ -452,23 +254,229 @@ class _LoginScreenState extends State<LoginScreen> {
                                     child : Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                       children: [
-                                        Image.asset('assets/images/google_logo.png',height: _height*0.07,width: _width*0.07,),
-                                        Padding(
-                                          padding: const EdgeInsets.only(bottom : 10.0 , top : 10.0),
-                                          child: Text("SIGNUP WITH GOOGLE"),
-                                        ),
-                                      ],)
-                                ),
-                              ):CircularProgressIndicator(),
-                            ),
-                          ],
+                                      Image.asset('assets/images/google_logo.png',height: _height*0.07,width: _width*0.07,),
+                                      Padding(
+                                        padding: const EdgeInsets.only(bottom : 10.0 , top : 10.0),
+                                        child: Text("LOGIN WITH GOOGLE"),
+                                      ),
+                                    ],)
+                                  ),
+                                ):CircularProgressIndicator(),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+               // Icon(Icons.apps),
+
+
+                /* SIGN UP */
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        Container(
+                            margin: EdgeInsets.only(top:20),
+                            decoration: BoxDecoration(
+                                color:Colors.grey[800],
+                                borderRadius: BorderRadius.circular(20)
+                            ),
+                            child:
+                            Padding(
+                              padding: const EdgeInsets.all(20.0),
+                              child: Form(
+                                key: _signUpFormKey,
+                                child: Column(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: TextFormField(
+                                        enabled: _disableSignUpFormFeild,
+                                        validator: (String signUpEmailText) {
+                                          if(!signUpEmailText.contains("@"))
+                                          {
+                                            return "INVALID EMAIL";
+                                          }
+                                          else if(!signUpEmailText.contains("."))
+                                          {
+                                            return "INVALID EMAIL";
+                                          }
+                                          else if(signUpEmailText.length>50)
+                                          {
+                                            return "LENGTH SHOULD BE LESS THAN 50";
+                                          }
+                                          else if(signUpEmailText.length<3)
+                                          {
+                                            return "INVALID EMAIL";
+                                          }
+                                          else
+                                          {
+                                            return null;
+                                          }
+                                        }  ,
+                                        onChanged: (_val) {
+                                          _signUpEmail = _val;
+                                        },
+                                        controller: _signUpEmailController,
+                                        decoration: InputDecoration(
+                                          hintText: "EXAMPLE@EMAIL.COM",
+                                          labelText: "EMAIL",
+                                          border: OutlineInputBorder(),
+                                        ),
+                                        maxLength: 50,
+                                        keyboardType: TextInputType.emailAddress,
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: TextFormField(
+                                        enabled: _disableSignUpFormFeild,
+                                        validator: (String signUpPasswordText) {
+                                          if(signUpPasswordText.length>20)
+                                          {
+                                            return "Password Length To Short";
+                                          }
+                                          else if(signUpPasswordText.length<8)
+                                          {
+                                            return "TOO SHORT MINIMUM SIZE 8 ";
+                                          }
+                                          else
+                                          {
+                                            return null;
+                                          }
+                                        }  ,
+                                        controller: _signUpPasswordController,
+                                        decoration: InputDecoration(
+                                          hintText: "PASSWORD",
+                                          labelText: "PASSWORD",
+                                          border: OutlineInputBorder(),
+                                          suffixIcon: IconButton(icon : Icon( _secureTextSignUpPassword? Icons.remove_red_eye : Icons.security),
+                                            onPressed: ()=>{
+                                              toggleIconSignUpPassword()
+                                            },),
+                                        ),
+                                        obscureText: _secureTextSignUpPassword,
+                                        maxLength: 20,
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: TextFormField(
+                                        enabled: _disableSignUpFormFeild,
+                                        validator: (String confirmPasswordText) {
+                                          if(confirmPasswordText.length>20)
+                                          {
+                                            return "Password Length To Short";
+                                          }
+
+                                          else if(_signUpPasswordController.text != _confirmSignUpPasswordController.text)
+                                          {
+                                            return "PASSWORD DOES NOT MATCH";
+                                          }
+                                          else
+                                          {
+                                            return null;
+                                          }
+                                        }  ,
+                                        onChanged: (_val){
+                                          _signUpPassword = _val;
+                                        },
+                                        controller: _confirmSignUpPasswordController,
+                                        decoration: InputDecoration(
+                                          hintText: "CONFIRM PASSWORD",
+                                          labelText: "CONFIRM PASSWORD",
+                                          border: OutlineInputBorder(),
+                                          suffixIcon: IconButton(icon : Icon( _secureTextSignUpCofirmPassword? Icons.remove_red_eye : Icons.security),
+                                            onPressed: ()=>{
+                                              toggleIconSignUpConfirmPassword()
+                                            },),
+                                        ),
+                                        obscureText: _secureTextSignUpCofirmPassword,
+                                        maxLength: 20,
+                                      ),
+                                    ),
+                                    _displaySignUpButton ? GestureDetector(
+                                      onTap: ()=>{
+                                        validateSignUpFormFeild(_signUpEmail,_signUpPassword,context)
+                                      },
+                                      child: Container(
+                                        width: _width*0.30,
+                                        decoration: BoxDecoration(
+                                          color: Colors.cyan,
+                                          borderRadius: BorderRadius.circular(30),
+                                          border: Border.all(
+                                            width: 2,
+                                            color: Colors.cyan[800],
+                                          ),
+                                        ),
+                                        child: Align(
+                                          alignment: Alignment.center,
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(15.0),
+                                                child: Text("SIGN UP"),
+                                          ),
+                                        ),
+                                      ),
+                                    ):CircularProgressIndicator(),
+                                  ],
+                                ),
+                              ),
+                            )
+                        ),
+                        SizedBox(height: 10,),
+                        Text("OR",style: TextStyle(fontSize: 17),),
+                        Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(bottom : 10.0),
+                                child: _displayGoogleSignUp ? GestureDetector(
+                                  onTap: ()=>{performGoogleSignUp(context)},
+                                  child: Container(
+                                      width: _width*0.65,
+                                      decoration: BoxDecoration(
+                                        color: Color(0xff303030),
+                                        borderRadius: BorderRadius.circular(30),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.grey[800],
+                                            //color: Colors.grey.withOpacity(0.5),
+                                            spreadRadius: 4,
+                                            blurRadius: 4,
+                                            offset: Offset(0, 0), // changes position of shadow
+                                          ),
+                                        ],
+                                        border: Border.all(
+                                          width: 2,
+                                          color: Colors.cyan[800],
+                                        ),
+                                      ),
+                                      child : Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          Image.asset('assets/images/google_logo.png',height: _height*0.07,width: _width*0.07,),
+                                          Padding(
+                                            padding: const EdgeInsets.only(bottom : 10.0 , top : 10.0),
+                                            child: Text("SIGNUP WITH GOOGLE"),
+                                          ),
+                                        ],)
+                                  ),
+                                ):CircularProgressIndicator(),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -547,7 +555,7 @@ class _LoginScreenState extends State<LoginScreen> {
       _secureTextSignUpCofirmPassword=!_secureTextSignUpCofirmPassword;
     });
   }
-  Future<void> validateSignInFormFeild(String signInEmail , String signInPassword , BuildContext context) async
+  Future<void> validateSignInFormFeild(String _signInEmail , String _signInPassword , BuildContext context) async
   {
     setState(() {
       _displaySignInButton = false;
@@ -558,7 +566,7 @@ class _LoginScreenState extends State<LoginScreen> {
     });
     if(_logInFormKey.currentState.validate() == true)
       {
-        await _repository.signInWithEmailAndPassword(signInEmail.trim(), signInPassword , context);
+        await _repository.signInWithEmailAndPassword(_signInEmail.trim(), _signInPassword , context);
         setState(() {
           _displaySignInButton = true;
           _disableSignInFormFeild = true;
@@ -575,7 +583,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   }
 
-  Future<void> validateSignUpFormFeild  (String signUpEmail ,String signUpPassword , BuildContext context ) async
+  Future<void> validateSignUpFormFeild  (String _signUpEmail ,String _signUpPassword , BuildContext context ) async
   {
     setState(() {
       _displaySignUpButton = false;
@@ -586,7 +594,7 @@ class _LoginScreenState extends State<LoginScreen> {
     });
     if(_signUpFormKey.currentState.validate() == true)
       {
-       await _repository.signUpWithEmailAndPassword(signUpEmail.trim(), signUpPassword, context);
+       await _repository.signUpWithEmailAndPassword(_signUpEmail.trim(), _signUpPassword, context);
         setState(() {
           _displaySignUpButton = true;
           _disableSignUpFormFeild = true;

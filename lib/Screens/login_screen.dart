@@ -27,6 +27,8 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _displaySignInButton = true;
   bool _displayGoogleSignUp = true;
   bool _displayGoogleSignIn = true;
+  bool _disableSignInFormFeild = true;
+  bool _disableSignUpFormFeild = true;
   TextEditingController _emailController = TextEditingController();
   TextEditingController _signUpEmailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
@@ -36,6 +38,8 @@ class _LoginScreenState extends State<LoginScreen> {
   final _signUpFormKey = GlobalKey<FormState>();
   String signUpEmail;
   String signUpPassword;
+  String signInEmail;
+  String signInPassword;
 
   @override
   Widget build(BuildContext context) {
@@ -118,6 +122,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: TextFormField(
+                                      enabled: _disableSignInFormFeild,
                                       validator: (String emailText) {
                                         if(!emailText.contains("@") )
                                         {
@@ -136,6 +141,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                           return null;
                                         }
                                       }  ,
+                                      onChanged: (_val) {
+                                        signInEmail = _val;
+                                      },
                                       controller: _emailController,
                                       decoration: InputDecoration(
                                         hintText: "EXAMPLE@EMAIL.COM",
@@ -149,16 +157,20 @@ class _LoginScreenState extends State<LoginScreen> {
                                   Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: TextFormField(
+                                      enabled: _disableSignInFormFeild,
                                       validator: (String passwordText) {
-                                        if(passwordText.length>20)
+                                        if(passwordText.isEmpty)
                                         {
-                                          return "Password Length To Short";
+                                          return "Password Can't Be Empty";
                                         }
                                         else
                                         {
                                           return null;
                                         }
                                       }  ,
+                                      onChanged: (_val) {
+                                        signInPassword = _val;
+                                      },
                                       controller: _passwordController,
                                       decoration: InputDecoration(
                                         hintText: "PASSWORD",
@@ -173,8 +185,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                       maxLength: 20,
                                     ),
                                   ),
-                                  GestureDetector(
-                                    onTap: ()=>{validateSignInFormFeild()},
+                                  _displaySignInButton?GestureDetector(
+                                    onTap: ()=>{validateSignInFormFeild(signInEmail,signInPassword,context)},
                                     child: Container(
                                       width: _width*0.30,
                                       decoration: BoxDecoration(
@@ -193,7 +205,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         ),
                                       ),
                                     ),
-                                  ),
+                                  ):CircularProgressIndicator(),
                                 ],
                               ),
                             ),
@@ -276,6 +288,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: TextFormField(
+                                      enabled: _disableSignUpFormFeild,
                                       validator: (String signUpEmailText) {
                                         if(!signUpEmailText.contains("@"))
                                         {
@@ -314,6 +327,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: TextFormField(
+                                      enabled: _disableSignUpFormFeild,
                                       validator: (String signUpPasswordText) {
                                         if(signUpPasswordText.length>20)
                                         {
@@ -345,6 +359,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: TextFormField(
+                                      enabled: _disableSignUpFormFeild,
                                       validator: (String confirmPasswordText) {
                                         if(confirmPasswordText.length>20)
                                         {
@@ -380,7 +395,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                   _displaySignUpButton ? GestureDetector(
                                     onTap: ()=>{
                                       validateSignUpFormFeild(signUpEmail,signUpPassword,context)
-
                                     },
                                     child: Container(
                                       width: _width*0.30,
@@ -460,6 +474,7 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
+
   Future<void> performGoogleSignUp(BuildContext context) async
   {
     setState(() {
@@ -532,11 +547,31 @@ class _LoginScreenState extends State<LoginScreen> {
       _secureTextSignUpCofirmPassword=!_secureTextSignUpCofirmPassword;
     });
   }
-  void validateSignInFormFeild()
+  Future<void> validateSignInFormFeild(String signInEmail , String signInPassword , BuildContext context) async
   {
+    setState(() {
+      _displaySignInButton = false;
+      _disableSignInFormFeild = false;
+    });
     setState(() {
       _logInFormKey.currentState.validate();
     });
+    if(_logInFormKey.currentState.validate() == true)
+      {
+        await _repository.signInWithEmailAndPassword(signInEmail.trim(), signInPassword , context);
+        setState(() {
+          _displaySignInButton = true;
+          _disableSignInFormFeild = true;
+        });
+      }
+    else
+      {
+        setState(() {
+          _displaySignInButton = true;
+          _disableSignInFormFeild = true;
+        });
+        showErrorSnackbar(context, "SIGNIN FAILED");
+      }
 
   }
 
@@ -544,6 +579,7 @@ class _LoginScreenState extends State<LoginScreen> {
   {
     setState(() {
       _displaySignUpButton = false;
+      _disableSignUpFormFeild = false;
     });
     setState(() {
       _signUpFormKey.currentState.validate();
@@ -553,14 +589,16 @@ class _LoginScreenState extends State<LoginScreen> {
        await _repository.signUpWithEmailAndPassword(signUpEmail.trim(), signUpPassword, context);
         setState(() {
           _displaySignUpButton = true;
+          _disableSignUpFormFeild = true;
         });
       }
     else
       {
         setState(() {
           _displaySignUpButton = true;
+          _disableSignUpFormFeild = true;
         });
-        showErrorSnackbar(context, "ERROR");
+        showErrorSnackbar(context, "SIGNUP FAILED");
       }
   }
 

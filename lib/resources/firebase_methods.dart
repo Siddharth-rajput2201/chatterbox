@@ -154,44 +154,66 @@ class FirebaseMethods {
           case 'operation-not-allowed':
             showErrorSnackbar(context, "AN ERROR OCCURED!PLEASE TRY AGAIN LATER");
             break;
-          case 'weak-password':
-            showErrorSnackbar(context, "WEAK PASSWORD.TRY USING : \n 1) SPECIAL CHARACTER(example : !@#%^*) \n 2) CAPITAL LETTERS \n 3) NUMBER");
-            break;
           case 'network-request-failed':
             showErrorSnackbar(context, "PLEASE CHECK YOUR INTERNET CONNECTION");
+            break;
+          case 'unknown':
+            showErrorSnackbar(context, "ERROR");
             break;
         }
         return Future.value(null);
     }
   }
 
+  // Future<void> signInWithEmailAndPassword(String signInEmail,String signInPassword , BuildContext context) async
+  // {
+  //   print(signInEmail);
+  //   print(signInPassword);
+  // }
 
-  Future<User> signInWithEmailAndPassword(String signUpEmail,
-      String signUpPassword, BuildContext context) async
+
+  Future<User> signInWithEmailAndPassword(String signInEmail,
+      String signInPassword, BuildContext context) async
   {
     try {
-      UserCredential _signUpUser = await _auth.signInWithEmailAndPassword(
-          email: signUpEmail, password: signUpPassword);
+      UserCredential _signInUser = await _auth.signInWithEmailAndPassword(
+          email: signInEmail, password: signInPassword);
 
-      User user = _signUpUser.user;
+      User user = _signInUser.user;
       return Future.value(user);
     }
     catch (error) {
       print(error.code);
       switch (error.code)
       {
+        case 'wrong-password':
+          showErrorSnackbar(context, "EITHER THE EMAIL OR PASSWORD IS INCORRECT");
+          break;
+
+        case 'too-many-requests':
+          showErrorSnackbar(context, "TOO MANY ATTEMPTS TRY AGAIN LATER");
+          break;
+
+        case 'unknown':
+          showErrorSnackbar(context, "ERROR");
+          break;
+
         case 'invalid-email':
           showErrorSnackbar(context, "INVALID EMAIL");
           break;
+
         case 'email-already-in-use':
           showErrorSnackbar(context, "EMAIL ALREADY IN USE ! PLEASE LOGIN IN");
           break;
+
         case 'operation-not-allowed':
           showErrorSnackbar(context, "AN ERROR OCCURED!PLEASE TRY AGAIN LATER");
           break;
-        case 'weak-password':
-          showErrorSnackbar(context, "WEAK PASSWORD.TRY USING : \n 1) SPECIAL CHARACTER(example : !@#%^*) \n 2) CAPITAL LETTERS \n 3) NUMBER");
+
+        case 'user-not-found':
+          showErrorSnackbar(context, "EMAIL NOT FOUND");
           break;
+
         case 'network-request-failed':
           showErrorSnackbar(context, "PLEASE CHECK YOUR INTERNET CONNECTION");
           break;

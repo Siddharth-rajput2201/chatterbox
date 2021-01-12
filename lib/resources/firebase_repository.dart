@@ -12,5 +12,5 @@ class FirebaseRepository
   Future<bool> checkCurrentUserID() => _firebaseMethods.checkCurrentUserId();
   Future<User> signUpWithEmailAndPassword(signUpEmail, signUpPassword, context) =>_firebaseMethods.signUpWithEmailAndPassword(signUpEmail, signUpPassword, context);
   Future<User> signInWithEmailAndPassword(signInEmail, signInPassword, context) =>_firebaseMethods.signInWithEmailAndPassword(signInEmail, signInPassword, context);
-  Future<void> forgetPassword(email,context) => _firebaseMethods.forgerPassword(email,context);
+  Future<void> forgetPassword(email,context) => _firebaseMethods.forgetPassword(email,context);
 }

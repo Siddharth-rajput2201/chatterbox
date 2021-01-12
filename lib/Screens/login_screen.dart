@@ -1,4 +1,5 @@
 //import 'package:chatterbox/Screens/home_screen.dart';
+import 'package:chatterbox/Screens/forgetpassword_screen.dart';
 import 'package:chatterbox/resources/firebase_repository.dart';
 import 'package:chatterbox/utils/errorDisplayWidgets.dart';
 //import 'package:firebase_auth/firebase_auth.dart';
@@ -46,7 +47,6 @@ class _LoginScreenState extends State<LoginScreen> {
     double _width = MediaQuery.of(context).size.width;
     double _height = MediaQuery.of(context).size.width;
     return loginSignup(_secureText,_width,_height);
-
   }
 
   Widget loginSignup(bool secureText, double _width , double _height) {
@@ -131,7 +131,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                           {
                                            return "INVALID EMAIL";
                                           }
-                                          else if(emailText.length>30)
+                                          else if(emailText.length>50)
                                           {
                                             return "INVALID EMAIL";
                                           }
@@ -190,7 +190,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                     ),
                                     Padding(
                                       padding: const EdgeInsets.only(top: 5,bottom: 20.0),
-                                      child: Text("FORGET PASSWORD ? ",style: TextStyle(color: Colors.blue),),
+                                      child: GestureDetector(
+                                          onTap: (){
+                                            Navigator.push(context, MaterialPageRoute(builder: (context)=>ForgetPasswordScreen()));
+                                          },
+                                          child: Text("FORGET PASSWORD ? ",style: TextStyle(color: Colors.blue),)),
                                     ),
                                     _displaySignInButton?GestureDetector(
                                       onTap: ()=>{validateSignInFormFeild(_signInEmail,_signInPassword,context)},
@@ -529,10 +533,11 @@ class _LoginScreenState extends State<LoginScreen> {
     //_repository.signInWithGoogle().then((User user)
     await _repository.signInWithGoogle(context);
 
-
-    setState(() {
-      _displayGoogleSignIn = true;
-    });
+    if(mounted) {
+      setState(() {
+        _displayGoogleSignIn = true;
+      });
+    }
   }
 
   void toggleIcon()

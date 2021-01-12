@@ -222,14 +222,48 @@ class FirebaseMethods {
     }
   }
 
-  Future<void> forgerPassword(String email,BuildContext context) async
+  Future<void> forgetPassword(String email,BuildContext context) async
   {
     try {
-      return _auth.sendPasswordResetEmail(email: email);
+       await _auth.sendPasswordResetEmail(email: email);
+       showProgressSnackbar(context,"PASSWORD RESET LINK SENT PLEASE CHECK YOUR EMAIL!");
+    }
+    on PlatformException catch (PlatformError)
+    {
+      print(PlatformError);
+      {
+        showErrorSnackbar(context, "PASSWORD RESET REQUEST FAILED");
+      }
+      return Future.value(null);
+    }
+
+    on NoSuchMethodError catch (noSuchMethodError)
+    {
+      print(noSuchMethodError);
+      {
+        showErrorSnackbar(context, "PASSWORD RESET REQUEST FAILED");
+      }
+      return Future.value(null);
     }
     catch(error)
     {
-      showErrorSnackbar(context, "ERROR");
+      switch(error.code){
+        case 'user-not-found':
+          showErrorSnackbar(context, "EMAIL NOT FOUND");
+          break;
+        case 'network-request-failed':
+          showErrorSnackbar(context, "PLEASE CHECK YOUR INTERNET CONNECTION");
+          break;
+        case 'unknown':
+          showErrorSnackbar(context, "ERROR");
+          break;
+        case 'invalid-email':
+          showErrorSnackbar(context, "INVALID EMAIL");
+          break;
+        case 'too-many-requests':
+          showErrorSnackbar(context, "TOO MANY ATTEMPTS TRY AGAIN LATER");
+          break;
+      }
     }
   }
 

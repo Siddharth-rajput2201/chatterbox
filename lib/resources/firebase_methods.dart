@@ -55,6 +55,7 @@ class FirebaseMethods {
       UserCredential _userCredential = await _auth.signInWithCredential(
           credential);
       User user = _userCredential.user;
+      await addDataToDb(user);
       print(user.uid);
       return user;
     }
@@ -117,6 +118,33 @@ class FirebaseMethods {
         modelUser.toMap(modelUser));
   }
 
+  // void authenticateUser(User user)
+  // {
+  //   _repository.authenticateUser(user).then((isNewUser)
+  //   {
+  //     if(isNewUser)
+  //     {
+  //       _repository.addDataToDb(user).then((value){
+  //         Navigator.pushReplacement(context, MaterialPageRoute(builder:(context)
+  //         {
+  //           return HomeScreen();
+  //         }));
+  //       });
+  //       //SnackBar(content: Text("USER DOES NOT EXIST PLEASE SIGN UP"),);
+  //     }
+  //     else
+  //     {
+  //       Navigator.pushReplacement(context, MaterialPageRoute(builder:(context)
+  //       {
+  //         return LoginScreen();
+  //       }));
+  //     }
+  //   }
+  //   );
+  // }
+  //
+
+
   Future<void> signOutUser() async {
     //  User user = await getCurrentUser();
     try {
@@ -138,6 +166,7 @@ class FirebaseMethods {
       UserCredential _signUpUser = await _auth.createUserWithEmailAndPassword(
           email: signUpEmail, password: signUpPassword);
       User user = _signUpUser.user;
+      await addDataToDb(user);
       return Future.value(user);
     }
     on PlatformException catch (PlatformError)

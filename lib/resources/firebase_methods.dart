@@ -13,7 +13,7 @@ class FirebaseMethods {
   static final FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
   ModelUser modelUser;
 
-  Future<User> getCurrentUser() async
+  User getCurrentUser()
   {
     try {
       User currentUser;
@@ -23,7 +23,7 @@ class FirebaseMethods {
     }
     catch (error) {
       print(error);
-      return Future.value(null);
+      return null;
     }
   }
 
@@ -137,9 +137,25 @@ class FirebaseMethods {
     try {
       UserCredential _signUpUser = await _auth.createUserWithEmailAndPassword(
           email: signUpEmail, password: signUpPassword);
-
       User user = _signUpUser.user;
       return Future.value(user);
+    }
+    on PlatformException catch (PlatformError)
+    {
+      print(PlatformError);
+      {
+        showErrorSnackbar(context, "PASSWORD RESET REQUEST FAILED");
+      }
+      return Future.value(null);
+    }
+
+    on NoSuchMethodError catch (noSuchMethodError)
+    {
+      print(noSuchMethodError);
+      {
+        showErrorSnackbar(context, "PASSWORD RESET REQUEST FAILED");
+      }
+      return Future.value(null);
     }
     catch (error) {
       print(error.code);
@@ -267,8 +283,51 @@ class FirebaseMethods {
     }
   }
 
+  Future<void> sendEmailVerification(User currentUser , BuildContext context) async
+  {
+    try {
+      await currentUser.sendEmailVerification();
+      showProgressSnackbar(context, "EMAIL VERIFICATION SENT! PLEASE CHECK YOUR EMAIL");
+    }
+    on PlatformException catch (PlatformError)
+    {
+      print(PlatformError);
+      {
+        showErrorSnackbar(context, "PASSWORD RESET REQUEST FAILED");
+      }
+      return Future.value(null);
+    }
 
-
+    on NoSuchMethodError catch (noSuchMethodError)
+    {
+      print(noSuchMethodError);
+      {
+        showErrorSnackbar(context, "PASSWORD RESET REQUEST FAILED");
+      }
+      return Future.value(null);
+    }
+    catch(error)
+    {
+      switch(error.code)
+      {
+        case 'user-not-found':
+          showErrorSnackbar(context, "EMAIL NOT FOUND");
+          break;
+        case 'network-request-failed':
+          showErrorSnackbar(context, "PLEASE CHECK YOUR INTERNET CONNECTION");
+          break;
+        case 'unknown':
+          showErrorSnackbar(context, "ERROR");
+          break;
+        case 'invalid-email':
+          showErrorSnackbar(context, "INVALID EMAIL");
+          break;
+        case 'too-many-requests':
+          showErrorSnackbar(context, "TOO MANY ATTEMPTS TRY AGAIN LATER");
+          break;
+      }
+    }
+  }
 
 }
   // print(user.providerData[1].providerId);

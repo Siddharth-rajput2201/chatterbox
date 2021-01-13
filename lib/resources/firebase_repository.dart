@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 class FirebaseRepository
 {
   FirebaseMethods _firebaseMethods = FirebaseMethods();
-  Future<User> getCurrentUser() => _firebaseMethods.getCurrentUser();
+  User getCurrentUser() => _firebaseMethods.getCurrentUser();
   Future<User> signInWithGoogle(context) => _firebaseMethods.signInWithGoogle(context);
   Future<bool> authenticateUser(User user) => _firebaseMethods.authenticateUser(user);
   Future<void> addDataToDb(User user) => _firebaseMethods.addDataToDb(user);
@@ -13,4 +13,5 @@ class FirebaseRepository
   Future<User> signUpWithEmailAndPassword(signUpEmail, signUpPassword, context) =>_firebaseMethods.signUpWithEmailAndPassword(signUpEmail, signUpPassword, context);
   Future<User> signInWithEmailAndPassword(signInEmail, signInPassword, context) =>_firebaseMethods.signInWithEmailAndPassword(signInEmail, signInPassword, context);
   Future<void> forgetPassword(email,context) => _firebaseMethods.forgetPassword(email,context);
+  Future<void> sendEmailVerification(currentUser , context) => _firebaseMethods.sendEmailVerification(currentUser, context);
 }

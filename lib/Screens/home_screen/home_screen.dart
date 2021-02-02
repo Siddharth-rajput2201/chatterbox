@@ -1,10 +1,11 @@
 import 'dart:async';
+import 'package:chatterbox/pageview/chat_list_screen.dart';
 import 'package:chatterbox/resources/firebase_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-//import 'package:chatterbox/Screens/login_screen.dart';
+
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -21,7 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int _page = 0;
   @override
   void initState() {
-    _timer = Timer.periodic(Duration(seconds: 5), (_timer) {
+    _timer = Timer.periodic(Duration(seconds: 1), (_timer) {
       checkVerification();
     });
     super.initState();
@@ -70,15 +71,8 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Scaffold(
           body: PageView(
             children: [
-              Center(child: Column(
-                children: [
-                  Text("Chat List Screen"),
-                  RaisedButton(child: Text("SIGNOUT"),onPressed: ()
-                  => signOutUser()
-                    //.whenComplete(() => Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context)=>LoginScreen()), (Route<dynamic>route) => false))
-                  )
-                ],
-              ),),
+              Center(child: Text("SOCIAL")),
+              Center(child: ChatListScreen(),),
               Center(child: Text("CALLS LOG"),),
               Center(child: Text("CONTACTS"),),
             ],
@@ -86,52 +80,41 @@ class _HomeScreenState extends State<HomeScreen> {
             onPageChanged: onPageChanged,
           ),
           bottomNavigationBar: Container(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: CupertinoTabBar(
-                items: <BottomNavigationBarItem>[
-                  BottomNavigationBarItem(
-                    icon: Icon(
-                      Icons.chat,
-                      color: (_page == 0)?Colors.lightBlue:Colors.grey,),
-                    label: "CHATS",
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(
-                      Icons.call,
-                      color: (_page == 1)?Colors.lightBlue:Colors.grey,),
-                    label: "CALLS",
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(
-                      Icons.contact_phone,
-                      color: (_page == 2)?Colors.lightBlue:Colors.grey,),
-                    label: "CONTACTS",
-                  ),
-                ],
-                onTap: navigationTapped,
-                currentIndex: _page,
-              ),
+            child: CupertinoTabBar(
+              items: <BottomNavigationBarItem>[
+                BottomNavigationBarItem(
+                  icon: Icon(
+                    Icons.home_filled,
+                    color: (_page == 0)?Colors.lightBlue:Colors.grey,),
+                  label: "HOME",
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(
+                    Icons.chat,
+                    color: (_page == 1)?Colors.lightBlue:Colors.grey,),
+                  label: "CHATS",
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(
+                    Icons.call,
+                    color: (_page == 2)?Colors.lightBlue:Colors.grey,),
+                  label: "CALLS",
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(
+                    Icons.contact_phone,
+                    color: (_page == 3)?Colors.lightBlue:Colors.grey,),
+                  label: "CONTACTS",
+                ),
+              ],
+              onTap: navigationTapped,
+              currentIndex: _page,
             ),
           ),
         ),
       ),
     );
   }
-    // Center(
-    //       child: Column(
-    //         mainAxisAlignment: MainAxisAlignment.center,
-    //         children: [
-    //           Text("Home Screen"),
-    //           Text(_currentUser.email),
-    //           RaisedButton(child: Text("SIGNOUT"),onPressed: ()
-    //           => signOutUser()
-    //             //.whenComplete(() => Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context)=>LoginScreen()), (Route<dynamic>route) => false))
-    //           )
-    //         ],
-    //       ),
-    //     );
-
 
   Widget verifyScreen(double _width)
   {
@@ -222,7 +205,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                       ),
                                     ),
                                   ):CircularProgressIndicator(),
-
                                 ],
                               ),
                             ],

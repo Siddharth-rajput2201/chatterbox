@@ -1,8 +1,11 @@
 import 'package:chatterbox/Screens/home_screen/home_screen.dart';
 import 'package:chatterbox/Screens/landing_screen/landing_screen.dart';
+import 'package:chatterbox/resources/firebase_methods.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,13 +21,19 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        darkTheme: ThemeData(
-          brightness: Brightness.dark,
-        ),
-        themeMode: ThemeMode.dark,
-        debugShowCheckedModeBanner: false,
-        home: LandingPage());
+    return MultiProvider(
+      child: MaterialApp(
+          darkTheme: ThemeData(
+            brightness: Brightness.dark,
+          ),
+          themeMode: ThemeMode.dark,
+          debugShowCheckedModeBanner: false,
+          home: LandingPage()
+      ),
+      providers: [
+        ChangeNotifierProvider(create: (_)=>FirebaseMethods()),
+      ],
+    );
   }
 }
 

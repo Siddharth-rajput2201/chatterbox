@@ -1,10 +1,67 @@
 import 'dart:async';
-import 'package:chatterbox/pageview/chat_list_screen.dart';
+import 'package:chatterbox/Screens/home_screen/homescreen_helper.dart';
+import 'package:chatterbox/Screens/profile_screen/profile_screen.dart';
+import 'package:chatterbox/Screens/Setting/SettingPage.dart';
+import 'package:chatterbox/pageview/ChatScreen/chatlist_screen.dart';
 import 'package:chatterbox/resources/firebase_repository.dart';
+import 'package:chatterbox/utils/universalcolorvariables.dart';
+import 'package:chatterbox/utils/utilitizes.dart';
+//import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+
+
+class UserCircle extends StatelessWidget {
+
+  final String text;
+
+  const UserCircle({Key key, @required this.text}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 40,
+      width: 40,
+      decoration:  BoxDecoration(
+          borderRadius:  BorderRadius.circular(50),
+          color: UniversalColorVariables.separatorColor
+      ),
+      child: Stack(
+        children: [
+          Align(
+            alignment: Alignment.center,
+            child: Text(
+              text,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: UniversalColorVariables.lightBlueColor,
+              ),
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: Container(
+              height: 12,
+              width: 12,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: UniversalColorVariables.blackColor,
+                  width: 2,
+                ),
+                color: UniversalColorVariables.onlineDotColor,
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
+
 
 
 class HomeScreen extends StatefulWidget {
@@ -20,12 +77,19 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _displayEmailVerificationSendButton = true;
   PageController pageController;
   int _page = 0;
+  GlobalKey<ScaffoldState> _key = GlobalKey();
+  String intials;
+
   @override
   void initState() {
     _timer = Timer.periodic(Duration(seconds: 1), (_timer) {
       checkVerification();
     });
     super.initState();
+    setState(() {
+      _currentUser = _repository.getCurrentUser();
+      intials = Utils.getInitials(_currentUser.displayName,_currentUser.email);
+    });
     pageController = PageController();
   }
 
@@ -39,6 +103,81 @@ class _HomeScreenState extends State<HomeScreen> {
     double _width = MediaQuery.of(context).size.width;
     _currentUser = _repository.getCurrentUser();
     return  homePage(_width);
+  }
+
+
+  buildProfileDrawer() {
+    return Drawer(
+      child:  ListView(
+        children: [
+          GestureDetector(
+            onTap: (){
+              Navigator.of(context).push(MaterialPageRoute(builder: (context)=>ProfilePage()));
+            },
+            child: DrawerHeader(
+              child: Column(
+                children: [
+                  _currentUser.photoURL==null?UserCircle(text: intials,):
+                  Container(
+                    constraints: BoxConstraints(
+                      maxHeight: 60,
+                      maxWidth: 60,
+                    ),
+                    child: Stack(
+                      children: [
+                        CircleAvatar(
+                          maxRadius: 30,
+                          backgroundColor: Colors.grey,
+                          backgroundImage: NetworkImage(
+                              _currentUser.photoURL),
+                        ),
+                        Align(
+                          alignment: Alignment.bottomRight,
+                          child: Container(
+                            height: 15,
+                            width: 15,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: UniversalColorVariables.onlineDotColor,
+                              border: Border.all(
+                                color: UniversalColorVariables.blackColor,
+                                width: 2,
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top : 10.0),
+                        child: Text("EMAIL : "+_currentUser.email),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top : 10.0),
+                        child: GetUserName(_currentUser.uid),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            ),
+          ),
+          RaisedButton(child: Text("SIGNOUT"),onPressed: ()
+          => signOutUser()
+            //.whenComplete(() => Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context)=>LoginScreen()), (Route<dynamic>route) => false))
+          ),
+          RaisedButton(child: Text("SETTING"),onPressed : (){
+            Navigator.of(context).push(MaterialPageRoute(builder: (context)=>SettingPage()));
+          }
+          ),
+        ],
+      ),
+    );
+
   }
 
 
@@ -69,6 +208,66 @@ class _HomeScreenState extends State<HomeScreen> {
         top: true,
         bottom: true,
         child: Scaffold(
+          key: _key,
+          drawer: buildProfileDrawer(),
+          appBar: AppBar(
+            backgroundColor:  UniversalColorVariables.blackColor,
+            elevation: 0,
+            title:_currentUser.photoURL==null?UserCircle(text: intials,):
+            Container(
+              constraints: BoxConstraints(
+                maxHeight: 40,
+                maxWidth: 40,
+              ),
+              child: Stack(
+                children: [
+                  CircleAvatar(
+                    maxRadius: 30,
+                    backgroundColor: Colors.grey,
+                    backgroundImage: NetworkImage(
+                        _currentUser.photoURL),
+                  ),
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: Container(
+                      height: 15,
+                      width: 15,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: UniversalColorVariables.onlineDotColor,
+                        border: Border.all(
+                          color: UniversalColorVariables.blackColor,
+                          width: 2,
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
+            leading: IconButton(
+              icon: Icon(Icons.notifications,
+                color: Colors.white,),
+              onPressed: (){
+              },
+            ),
+            actions: [
+              IconButton(
+                icon: Icon(Icons.search,
+                  color: Colors.white,),
+                onPressed: (){
+                },
+              ),
+              IconButton(
+                icon: Icon(Icons.more_vert,
+                  color: Colors.white,),
+                onPressed: (){
+                  _key.currentState.openDrawer();
+                },
+              ),
+            ],
+            centerTitle: true,
+          ),
           body: PageView(
             children: [
               Center(child: Text("SOCIAL")),
@@ -218,6 +417,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+
 
   Widget waiting()
   {

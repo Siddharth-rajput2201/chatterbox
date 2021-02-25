@@ -1,4 +1,4 @@
-import 'package:chatterbox/Screens/forgetpassword_screen.dart';
+import 'package:chatterbox/Screens/forgetpassword_screen/forgetpassword_screen.dart';
 import 'package:chatterbox/resources/firebase_repository.dart';
 import 'package:chatterbox/utils/errorDisplayWidgets.dart';
 import 'package:chatterbox/utils/universalcolorvariables.dart';

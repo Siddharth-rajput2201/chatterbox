@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-class FirebaseMethods {
+class FirebaseMethods with ChangeNotifier{
   final FirebaseAuth _auth = FirebaseAuth.instance;
   GoogleSignIn _googleSignIn = GoogleSignIn();
   static final FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
@@ -116,6 +116,18 @@ class FirebaseMethods {
         user.photoURL);
     firebaseFirestore.collection("users").doc(user.uid).set(
         modelUser.toMap(modelUser));
+  }
+
+  Future <void> getDataFromDB (User user) async {
+
+  }
+
+  String getUserName (User user) {
+    String username;
+
+    /*   Query  */
+
+    return username;
   }
 
   // void authenticateUser(User user)

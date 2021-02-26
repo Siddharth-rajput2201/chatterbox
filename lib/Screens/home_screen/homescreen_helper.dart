@@ -9,7 +9,6 @@ class GetUserName extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     CollectionReference users = FirebaseFirestore.instance.collection('users');
-
     return FutureBuilder<DocumentSnapshot>(
       future: users.doc(documentId).get(),
       builder:
@@ -28,3 +27,56 @@ class GetUserName extends StatelessWidget {
     );
   }
 }
+
+
+class GetUserNameStream extends StatelessWidget {
+  final String documentId; // This is your User UID
+
+  GetUserNameStream(this.documentId);
+
+  @override
+  Widget build(BuildContext context) {
+    DocumentReference users = FirebaseFirestore.instance.collection('users').doc(documentId);
+    return StreamBuilder<DocumentSnapshot>(
+      stream: users.snapshots(),
+      builder:  (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+
+        if (snapshot.hasError) {
+          return Text("Something went wrong");
+        }
+
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Text("waiting");
+        }
+        Map<String, dynamic> data = snapshot.data.data();
+        return Text("${data['username']}");
+      },
+    );
+  }
+}
+
+
+// class HomeScreenHelper with ChangeNotifier{
+//
+//   CollectionReference users = FirebaseFirestore.instance.collection('users').doc('$DocumentID');
+//
+//   Widget getUserNameStream(BuildContext context , String DocumentID)
+//   {
+//     return StreamBuilder<QuerySnapshot>(
+//       stream: users.snapshots(),
+//       builder:  (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+//
+//         if (snapshot.hasError) {
+//           return Text("Something went wrong");
+//         }
+//
+//         if (snapshot.connectionState == ConnectionState.done) {
+//           Map<String, dynamic> data = snapshot.data.data();
+//           return Text("${data['username']}");
+//         }
+//         return Text("loading");
+//       },
+//     )
+//   }
+//
+// }

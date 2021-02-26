@@ -1,11 +1,14 @@
+import 'package:chatterbox/Screens/profile_screen/profilescreen_helper.dart';
 import 'package:chatterbox/models/user.dart';
 import 'package:chatterbox/utils/errorDisplayWidgets.dart';
 import 'package:chatterbox/utils/utilitizes.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:provider/provider.dart';
 
 class FirebaseMethods with ChangeNotifier{
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -368,6 +371,25 @@ class FirebaseMethods with ChangeNotifier{
           break;
       }
     }
+  }
+
+
+  Future uploadUserImage(BuildContext context) async{
+
+    UploadTask imageUploadTask;
+
+    Reference imageReference = FirebaseStorage.instance.ref().child('userProfileImage/${Provider.of<ProfileScreenUtils>(context,listen: false).getUserImage.path}/${TimeOfDay.now()}');
+
+    imageUploadTask = imageReference.putFile(Provider.of<ProfileScreenUtils>(context,listen: false).getUserImage);
+
+    await imageUploadTask.whenComplete(() => print("IMAGE UPLOADED"));
+
+    imageReference.getDownloadURL().then((url) {
+      Provider.of<ProfileScreenUtils>(context,listen: false).userImageUrl = url.toString();
+      print('the user profile url => ${Provider.of<ProfileScreenUtils>(context,listen: false).userImageUrl}');
+      notifyListeners();
+
+    });
   }
 
 }

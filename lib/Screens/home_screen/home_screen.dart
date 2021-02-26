@@ -14,53 +14,53 @@ import 'package:flutter/services.dart';
 
 
 
-class UserCircle extends StatelessWidget {
-
-  final String text;
-
-  const UserCircle({Key key, @required this.text}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 40,
-      width: 40,
-      decoration:  BoxDecoration(
-          borderRadius:  BorderRadius.circular(50),
-          color: UniversalColorVariables.separatorColor
-      ),
-      child: Stack(
-        children: [
-          Align(
-            alignment: Alignment.center,
-            child: Text(
-              text,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: UniversalColorVariables.lightBlueColor,
-              ),
-            ),
-          ),
-          Align(
-            alignment: Alignment.bottomRight,
-            child: Container(
-              height: 12,
-              width: 12,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: UniversalColorVariables.blackColor,
-                  width: 2,
-                ),
-                color: UniversalColorVariables.onlineDotColor,
-              ),
-            ),
-          )
-        ],
-      ),
-    );
-  }
-}
+// class UserCircle extends StatelessWidget {
+//
+//   final String text;
+//
+//   const UserCircle({Key key, @required this.text}) : super(key: key);
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       height: 40,
+//       width: 40,
+//       decoration:  BoxDecoration(
+//           borderRadius:  BorderRadius.circular(50),
+//           color: UniversalColorVariables.separatorColor
+//       ),
+//       child: Stack(
+//         children: [
+//           Align(
+//             alignment: Alignment.center,
+//             child: Text(
+//               text,
+//               style: TextStyle(
+//                 fontWeight: FontWeight.bold,
+//                 color: UniversalColorVariables.lightBlueColor,
+//               ),
+//             ),
+//           ),
+//           Align(
+//             alignment: Alignment.bottomRight,
+//             child: Container(
+//               height: 12,
+//               width: 12,
+//               decoration: BoxDecoration(
+//                 shape: BoxShape.circle,
+//                 border: Border.all(
+//                   color: UniversalColorVariables.blackColor,
+//                   width: 2,
+//                 ),
+//                 color: UniversalColorVariables.onlineDotColor,
+//               ),
+//             ),
+//           )
+//         ],
+//       ),
+//     );
+//   }
+// }
 
 
 
@@ -117,7 +117,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: DrawerHeader(
               child: Column(
                 children: [
-                  _currentUser.photoURL==null?UserCircle(text: intials,):
+                  _currentUser.photoURL==null?Image.asset('assets/images/NouserImage.png',height: 40,width: 40,):
                   Container(
                     constraints: BoxConstraints(
                       maxHeight: 60,
@@ -145,7 +145,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                             ),
                           ),
-                        )
+                        ),
                       ],
                     ),
                   ),
@@ -158,7 +158,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       Padding(
                         padding: const EdgeInsets.only(top : 10.0),
-                        child: GetUserName(_currentUser.uid),
+                        child: Row(
+                          children: [
+                            Text("USERNAME : "),
+                            GetUserNameStream(_currentUser.uid),
+                          ],
+                        ),
                       ),
                     ],
                   )
@@ -213,7 +218,7 @@ class _HomeScreenState extends State<HomeScreen> {
           appBar: AppBar(
             backgroundColor:  UniversalColorVariables.blackColor,
             elevation: 0,
-            title:_currentUser.photoURL==null?UserCircle(text: intials,):
+            title:_currentUser.photoURL==null?Image.asset('assets/images/NouserImage.png',height: 40,width: 40,):
             Container(
               constraints: BoxConstraints(
                 maxHeight: 40,

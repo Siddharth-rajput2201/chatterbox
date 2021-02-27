@@ -382,13 +382,11 @@ class FirebaseMethods with ChangeNotifier{
 
     imageUploadTask = imageReference.putFile(Provider.of<ProfileScreenUtils>(context,listen: false).getUserImage);
     await imageUploadTask.whenComplete((){
-      print("UPLOADED");
-      //Navigator.of(context).pop();
+      Navigator.of(context).pop();
     });
     imageReference.getDownloadURL().then((url) {
       Provider.of<ProfileScreenUtils>(context,listen: false).userImageUrl = url.toString();
       print('the user profile url => ${Provider.of<ProfileScreenUtils>(context,listen: false).userImageUrl}');
-
       updateUserProfileUrl(context);
       updateProfilePhoto(_auth.currentUser.uid, context);
       notifyListeners();
@@ -418,7 +416,7 @@ class FirebaseMethods with ChangeNotifier{
   Future<void>updateUserName(String documentId,BuildContext context,String userName)
   {
     DocumentReference users = FirebaseFirestore.instance.collection('users').doc(documentId);
-    return users.update({'user': '$userName'});
+    return users.update({'username': '$userName'});
   }
 
 }

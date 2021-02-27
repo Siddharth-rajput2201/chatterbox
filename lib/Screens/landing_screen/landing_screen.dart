@@ -51,6 +51,7 @@ class _LoginScreenState extends State<LoginScreen> {
         top: true,
         bottom: true,
         child: Scaffold(
+          resizeToAvoidBottomInset: true,
           backgroundColor: UniversalColorVariables.darkBackGroundColor,
           appBar: AppBar(
             backgroundColor: Color(0xff303030),

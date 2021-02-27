@@ -21,9 +21,87 @@ class ProfileScreenUtils with ChangeNotifier{
     notifyListeners();
   }
 
+  Future<void> userNameSelectionBottomWidget(BuildContext context, String currentUserID)
+  {
+    final _userNameChangeKey = GlobalKey<FormState>();
+    TextEditingController _userNameController = TextEditingController();
+    return showModalBottomSheet(
+        shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
+        context: context,
+        isScrollControlled: true,
+        builder: (context) => Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                child: Text('Enter New Username',style: TextStyle(fontSize: 20),),
+              ),
+              SizedBox(
+                height: 8.0,
+              ),
+              Padding(
+                padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewInsets.bottom),
+                child: Column(
+                  children: [
+                    Form(
+                      key: _userNameChangeKey,
+                      child: TextFormField(
+                      validator: (String userNameText) {
+                      if(userNameText.length>30) {
+                        return "Too Long";
+                      }
+                      else if(userNameText.length<2)
+                        {
+                          return "Too Short";
+                        }
+                      return null;
+                      } ,
+                        decoration: InputDecoration(
+                            hintText: 'New Username'
+                        ),
+                        maxLength: 30,
+                        controller: _userNameController,
+                        autofocus: true,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top : 15.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          RaisedButton(child: Text("CANCEL"),onPressed: (){Navigator.of(context).pop();},),
+                          RaisedButton(child: Text("SUBMIT"),onPressed: (){
+                            if(_userNameChangeKey.currentState.validate())
+                              {
+                                Provider.of<FirebaseMethods>(context,listen: false).updateUserName(currentUserID, context,_userNameController.text).whenComplete(() => Navigator.of(context).pop());
+                              }
+                             else
+                               {
+                                 return null;
+                               }
+                            },),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ));
+  }
+
+
    Future<void> photoSelectionBottomWidget (BuildContext profilePageContext)
   {
     return showModalBottomSheet(
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
       context: profilePageContext,
       builder: (context){
         return Container(

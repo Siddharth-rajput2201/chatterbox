@@ -381,18 +381,50 @@ class FirebaseMethods with ChangeNotifier{
     Reference imageReference = FirebaseStorage.instance.ref().child('userProfileImage/${Provider.of<ProfileScreenUtils>(context,listen: false).getUserImage.path}/${TimeOfDay.now()}');
 
     imageUploadTask = imageReference.putFile(Provider.of<ProfileScreenUtils>(context,listen: false).getUserImage);
-
-    await imageUploadTask.whenComplete(() => print("IMAGE UPLOADED"));
-
+    await imageUploadTask.whenComplete((){
+      print("UPLOADED");
+      //Navigator.of(context).pop();
+    });
     imageReference.getDownloadURL().then((url) {
       Provider.of<ProfileScreenUtils>(context,listen: false).userImageUrl = url.toString();
       print('the user profile url => ${Provider.of<ProfileScreenUtils>(context,listen: false).userImageUrl}');
+
+      updateUserProfileUrl(context);
+      updateProfilePhoto(_auth.currentUser.uid, context);
       notifyListeners();
 
     });
+
+  }
+
+  void updateUserProfileUrl(BuildContext context)
+  {
+    var user = _auth.currentUser;
+    user.updateProfile(displayName: user.displayName , photoURL: '${Provider.of<ProfileScreenUtils>(context,listen: false).userImageUrl}').then((value) {
+      print("Upload Completed");
+      //showProgressSnackbar(context, "UPLOAD SUCCESSFUL");
+    }).catchError((onError){
+      print("upload Failed");
+      //showErrorSnackbar(context,"UPLOAD FAILED");
+    });
+  }
+
+  Future<void>updateProfilePhoto(String documentId,BuildContext context)
+  {
+    DocumentReference users = FirebaseFirestore.instance.collection('users').doc(documentId);
+    return users.update({'profilePhoto': '${Provider.of<ProfileScreenUtils>(context,listen: false).userImageUrl}'});
+  }
+
+  Future<void>updateUserName(String documentId,BuildContext context,String userName)
+  {
+    DocumentReference users = FirebaseFirestore.instance.collection('users').doc(documentId);
+    return users.update({'user': '$userName'});
   }
 
 }
+
+
+
   // print(user.providerData[1].providerId);
     // print(user.uid);
     // print(user.providerData[1].providerId);

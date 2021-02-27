@@ -13,18 +13,18 @@ class ProfileScreenUtils with ChangeNotifier{
   String userImageUrl;
   String get getUserImageUrl => userImageUrl;
 
-  Future pickUserImage(BuildContext context, ImageSource source) async {
+  Future pickUserImage(BuildContext context, ImageSource source,BuildContext contextForError) async {
     final pickedUserImage = await picker.getImage(source: source);
     pickedUserImage == null ? print('SELECT IMAGE') : userImage = File(pickedUserImage.path);
     print(userImage.path);
-    userImage != null ? Provider.of<FirebaseMethods>(context, listen: false).uploadUserImage(context) : showErrorSnackbar(context, "NO IMAGE SELECTED");
+    userImage == null ? showErrorSnackbar(contextForError, "NO IMAGE SELECTED") : Provider.of<FirebaseMethods>(context, listen: false).uploadUserImage(context);
     notifyListeners();
   }
 
-   Future<void> photoSelectionBottomWidget (BuildContext context)
+   Future<void> photoSelectionBottomWidget (BuildContext profilePageContext)
   {
     return showModalBottomSheet(
-      context: context,
+      context: profilePageContext,
       builder: (context){
         return Container(
           height: MediaQuery.of(context).size.height * 0.25,
@@ -49,8 +49,11 @@ class ProfileScreenUtils with ChangeNotifier{
                               borderRadius: BorderRadius.circular(50)
                           ),
                           child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Icon(Icons.camera,size: 25,),
+                            padding: const EdgeInsets.all(4.0),
+                            child: IconButton(icon : Icon(Icons.camera,size: 25,),onPressed: (){
+                              Provider.of<ProfileScreenUtils>(context,listen: false).pickUserImage(context, ImageSource.camera,profilePageContext);
+                              Navigator.of(context).pop();
+                            },),
                           )
                       ),
                       Padding(
@@ -68,8 +71,11 @@ class ProfileScreenUtils with ChangeNotifier{
                               borderRadius: BorderRadius.circular(50)
                           ),
                           child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Icon(Icons.photo,size: 25,),
+                            padding: const EdgeInsets.all(4.0),
+                            child: IconButton(icon : Icon(Icons.photo,size: 25,),onPressed: (){
+                              Provider.of<ProfileScreenUtils>(context,listen: false).pickUserImage(context, ImageSource.gallery,profilePageContext);
+                             // Navigator.of(context).pop();
+                            },),
                           )
                       ),
                       Padding(

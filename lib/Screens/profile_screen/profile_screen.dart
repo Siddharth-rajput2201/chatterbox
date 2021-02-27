@@ -40,12 +40,13 @@ class _ProfilePageState extends State<ProfilePage> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.all(10.0),
-                        child: CircleAvatar(
-                          maxRadius: 80,
-                          backgroundColor: Colors.grey,
-                          backgroundImage: _currentUser.photoURL == null ? AssetImage('assets/images/NouserImage.png'):
-                          NetworkImage(_currentUser.photoURL) ,
-                        ),
+                        child: GetUserPhotoUrlStream(_currentUser.uid),
+                        // CircleAvatar(
+                        //   maxRadius: 80,
+                        //   backgroundColor: Colors.grey,
+                        //   backgroundImage: Provider.of<ProfileScreenUtils>(context,listen: false).getUserImageUrl == null ? _currentUser.photoURL == null ? AssetImage('assets/images/NouserImage.png'):
+                        //     NetworkImage(_currentUser.photoURL) : FileImage(Provider.of<ProfileScreenUtils>(context,listen: false).userImage),
+                        // ),
                       ),
                       Positioned(
                         bottom: -10,

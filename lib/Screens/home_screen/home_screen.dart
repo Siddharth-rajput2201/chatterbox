@@ -117,7 +117,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: DrawerHeader(
               child: Column(
                 children: [
-                  _currentUser.photoURL==null?Image.asset('assets/images/NouserImage.png',height: 40,width: 40,):
+                  //_currentUser.photoURL==null?Image.asset('assets/images/NouserImage.png',height: 40,width: 40,):
                   Container(
                     constraints: BoxConstraints(
                       maxHeight: 60,
@@ -125,12 +125,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     child: Stack(
                       children: [
-                        CircleAvatar(
-                          maxRadius: 30,
-                          backgroundColor: Colors.grey,
-                          backgroundImage: NetworkImage(
-                              _currentUser.photoURL),
-                        ),
+                        GetUserPhotoUrlStream(_currentUser.uid),
                         Align(
                           alignment: Alignment.bottomRight,
                           child: Container(
@@ -218,7 +213,8 @@ class _HomeScreenState extends State<HomeScreen> {
           appBar: AppBar(
             backgroundColor:  UniversalColorVariables.blackColor,
             elevation: 0,
-            title:_currentUser.photoURL==null?Image.asset('assets/images/NouserImage.png',height: 40,width: 40,):
+            title:
+            //_currentUser.photoURL==null?Image.asset('assets/images/NouserImage.png',height: 40,width: 40,):
             Container(
               constraints: BoxConstraints(
                 maxHeight: 40,
@@ -226,12 +222,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               child: Stack(
                 children: [
-                  CircleAvatar(
-                    maxRadius: 30,
-                    backgroundColor: Colors.grey,
-                    backgroundImage: NetworkImage(
-                        _currentUser.photoURL),
-                  ),
+                  GetUserPhotoUrlStream(_currentUser.uid),
                   Align(
                     alignment: Alignment.bottomRight,
                     child: Container(

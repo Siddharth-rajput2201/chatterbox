@@ -166,11 +166,11 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
-          RaisedButton(child: Text("SIGNOUT"),onPressed: ()
+          ElevatedButton(child: Text("SIGNOUT"),onPressed: ()
           => signOutUser()
             //.whenComplete(() => Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context)=>LoginScreen()), (Route<dynamic>route) => false))
           ),
-          RaisedButton(child: Text("SETTING"),onPressed : (){
+          ElevatedButton(child: Text("SETTING"),onPressed : (){
             Navigator.of(context).push(MaterialPageRoute(builder: (context)=>SettingPage()));
           }
           ),
@@ -471,11 +471,11 @@ class _HomeScreenState extends State<HomeScreen> {
       builder: (context)=>AlertDialog(
         title: Text("DO YOU REALLY WANT TO EXIT THE APP"),
         actions: <Widget>[
-          FlatButton(
+          TextButton(
             child: Text("NO"),
             onPressed: ()=>Navigator.pop(context,false),
           ),
-          FlatButton(
+          TextButton(
             child: Text("YES"),
             onPressed: ()=>SystemNavigator.pop(),
           ),

@@ -55,13 +55,65 @@ class FirebaseMethods with ChangeNotifier{
         // takes the required credentials
         idToken: _signInAuthentication.idToken,
       );
-      UserCredential _userCredential = await _auth.signInWithCredential(
-          credential);
+      UserCredential _userCredential = await _auth.signInWithCredential(credential);
+      User user = _userCredential.user;
+     // await addDataToDb(user);
+      print(user.uid);
+      return user;
+    }
+
+
+
+    on PlatformException catch (PlatformError)
+    {
+      print(PlatformError);
+      {
+        showErrorSnackbar(context, "SIGNUP/LOGIN FAILED");
+      }
+      return Future.value(null);
+    }
+
+    on NoSuchMethodError catch (noSuchMethodError)
+    {
+      print(noSuchMethodError);
+      {
+        showErrorSnackbar(context, "SIGNUP/LOGIN FAILED");
+      }
+      return Future.value(null);
+    }
+
+    catch (error) {
+      switch(error.code)
+      {
+        case 'network_error':
+          showErrorSnackbar(context, "CHECK YOUR INTERNET CONNECTIVITY");
+          break;
+      }
+      return Future.value(null);
+    }
+  }
+
+  Future<User> signUpWithGoogle(BuildContext context) async
+  {
+    try {
+      GoogleSignInAccount _signInAccount = await _googleSignIn
+          .signIn(); // Calls box for email in google account
+      GoogleSignInAuthentication _signInAuthentication = await _signInAccount
+          .authentication; // authentication creadentials for google
+
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: _signInAuthentication.accessToken,
+        // takes the required credentials
+        idToken: _signInAuthentication.idToken,
+      );
+      UserCredential _userCredential = await _auth.signInWithCredential(credential);
       User user = _userCredential.user;
       await addDataToDb(user);
       print(user.uid);
       return user;
     }
+
+
 
     on PlatformException catch (PlatformError)
     {

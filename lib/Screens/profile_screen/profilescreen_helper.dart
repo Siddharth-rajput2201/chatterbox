@@ -74,11 +74,11 @@ class ProfileScreenUtils with ChangeNotifier{
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          RaisedButton(child: Text("CANCEL"),onPressed: (){Navigator.of(context).pop();},),
-                          RaisedButton(child: Text("SUBMIT"),onPressed: (){
+                          ElevatedButton(child: Text("CANCEL"),onPressed: (){Navigator.of(context).pop();},),
+                          ElevatedButton(child: Text("SUBMIT"),onPressed: (){
                             if(_userNameChangeKey.currentState.validate())
                               {
-                                Provider.of<FirebaseMethods>(context,listen: false).updateUserName(currentUserID, context,_userNameController.text).whenComplete(() => Navigator.of(context).pop());
+                                Provider.of<FirebaseMethods>(context,listen: false).updateUserName(currentUserID, context,_userNameController.text);
                               }
                              else
                                {

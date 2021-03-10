@@ -6,8 +6,8 @@ class ModelUser {
   String status;
   int state;
   String profilePhoto;
-
-  ModelUser(this.uid,this.name,this.email,this.usernmame,this.status,this.state,this.profilePhoto);
+  bool emailVerified;
+  ModelUser(this.uid,this.name,this.email,this.usernmame,this.status,this.state,this.profilePhoto,this.emailVerified);
 
   Map toMap(ModelUser user){
     var data = Map<String, dynamic>();
@@ -18,6 +18,7 @@ class ModelUser {
     data['status'] = user.status;
     data['state'] = user.state;
     data['profilePhoto'] = user.profilePhoto;
+    data['emailVerified'] = user.emailVerified;
     return data;
   }
 
@@ -29,5 +30,6 @@ class ModelUser {
     this.status = mapData['status'];
     this.state = mapData['state'];
     this.profilePhoto = mapData['profilePhoto'];
+    this.emailVerified = mapData['emailVerified'];
   }
 }

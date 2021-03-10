@@ -1,7 +1,10 @@
+
 import 'package:chatterbox/Screens/home_screen/home_screen.dart';
 import 'package:chatterbox/Screens/landing_screen/landing_screen.dart';
 import 'package:chatterbox/Screens/profile_screen/profilescreen_helper.dart';
+import 'package:chatterbox/Screens/verifyEmailScreen/verifyEmail_screen.dart';
 import 'package:chatterbox/resources/firebase_methods.dart';
+//import 'package:chatterbox/resources/firebase_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -15,13 +18,16 @@ void main() async {
 }
 
 class MyApp extends StatefulWidget {
+
   @override
   _MyAppState createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
+
   @override
   Widget build(BuildContext context) {
+
     return MultiProvider(
       child: MaterialApp(
           darkTheme: ThemeData(
@@ -39,22 +45,58 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-class LandingPage extends StatelessWidget {
+
+
+class LandingPage extends StatefulWidget {
+  @override
+  _LandingPageState createState() => _LandingPageState();
+}
+class _LandingPageState extends State<LandingPage> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<User>(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, AsyncSnapshot<User> snapshot) {
             if (snapshot.hasData) {
-             // print("USER ID IF USER IS NOT NULL :  " + user.uid);
-              return HomeScreen();
+              if(!snapshot.data.emailVerified)
+                {
+                  return  VerifyEmailScreen();
+                }
+              else
+                {
+                  return HomeScreen();
+                }
             }
+            else if(snapshot.hasError)
+              {
+                return CircularProgressIndicator();
+              }
             else {
-              //print("USER ID IF THE USER IS NULL :  " + user.uid);
               return LoginScreen();
             }
       },
     );
   }
+
+// Widget homePage(double _width)
+// {
+//   try {
+//     if (_isemailverified) {
+//       return chatScreen();
+//     }
+//     else if(!_isemailverified) {
+//       return verifyScreen(_width);
+//     }
+//     else
+//       {
+//         return waiting();
+//       }
+//   }
+//   catch(error)
+//   {
+//     return waiting();
+//   }
+// }
+
 }
 

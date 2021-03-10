@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:chatterbox/resources/firebase_methods.dart';
 import 'package:chatterbox/utils/errorDisplayWidgets.dart';
 import 'package:flutter/material.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
@@ -9,16 +10,37 @@ class ProfileScreenUtils with ChangeNotifier{
 
   final picker = ImagePicker();
   File userImage;
+  File croppedUserImage;
+  File get getCroppedUserImage =>  croppedUserImage;
   File get getUserImage => userImage;
   String userImageUrl;
   String get getUserImageUrl => userImageUrl;
+  String bucketImageReference;
+  String get bucketImageReferenceUrl => bucketImageReference;
 
   Future pickUserImage(BuildContext context, ImageSource source,BuildContext contextForError) async {
-    final pickedUserImage = await picker.getImage(source: source);
-    pickedUserImage == null ? print('SELECT IMAGE') : userImage = File(pickedUserImage.path);
-    print(userImage.path);
-    userImage == null ? showErrorSnackbar(contextForError, "NO IMAGE SELECTED") : Provider.of<FirebaseMethods>(context, listen: false).uploadUserImage(context);
-    notifyListeners();
+    try{
+      final pickedUserImage = await picker.getImage(source: source);
+      pickedUserImage == null ? print('SELECT IMAGE') : userImage = File(pickedUserImage.path);
+      print(userImage.path);
+      croppedUserImage = await ImageCropper.cropImage(sourcePath: userImage.path);
+      userImage == null ? showErrorSnackbar(contextForError, "NO IMAGE SELECTED") :
+      Provider.of<FirebaseMethods>(context, listen: false).uploadUserImage(context);
+      notifyListeners();
+    }
+    on FlutterError catch (PlatformError)
+    {
+      print(PlatformError);
+      {
+        showErrorSnackbar(context, "Error");
+      }
+      return Future.value(null);
+    }
+    catch(error)
+    {
+      showErrorSnackbar(context, "ERROR");
+    }
+
   }
 
   Future<void> userNameSelectionBottomWidget(BuildContext context, String currentUserID)
@@ -32,21 +54,19 @@ class ProfileScreenUtils with ChangeNotifier{
         isScrollControlled: true,
         builder: (context) => Padding(
           padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                child: Text('Enter New Username',style: TextStyle(fontSize: 20),),
-              ),
-              SizedBox(
-                height: 8.0,
-              ),
-              Padding(
-                padding: EdgeInsets.only(
-                    bottom: MediaQuery.of(context).viewInsets.bottom),
-                child: Column(
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              //mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                  child: Text('Enter New Username',style: TextStyle(fontSize: 20),),
+                ),
+                SizedBox(
+                  height: 8.0,
+                ),
+                Column(
                   children: [
                     Form(
                       key: _userNameChangeKey,
@@ -90,8 +110,8 @@ class ProfileScreenUtils with ChangeNotifier{
                     ),
                   ],
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ));
   }
@@ -153,7 +173,8 @@ class ProfileScreenUtils with ChangeNotifier{
                             child: IconButton(icon : Icon(Icons.photo,size: 25,),onPressed: (){
                               Provider.of<ProfileScreenUtils>(context,listen: false).pickUserImage(context, ImageSource.gallery,profilePageContext);
                              // Navigator.of(context).pop();
-                            },),
+                            },
+                            ),
                           )
                       ),
                       Padding(
@@ -172,7 +193,11 @@ class ProfileScreenUtils with ChangeNotifier{
                           ),
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Icon(Icons.delete,size: 25,),
+                            child: IconButton(icon : Icon(Icons.delete,size: 25,),onPressed: (){
+                              Provider.of<FirebaseMethods>(context,listen: false).removeUserPhotoUrl(context);
+                              // Navigator.of(context).pop();
+                            },
+                            ),
                           )
                       ),
                       Padding(

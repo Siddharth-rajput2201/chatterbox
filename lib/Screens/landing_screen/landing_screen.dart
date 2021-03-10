@@ -2,6 +2,7 @@ import 'package:chatterbox/Screens/forgetpassword_screen/forgetpassword_screen.d
 import 'package:chatterbox/resources/firebase_repository.dart';
 import 'package:chatterbox/utils/errorDisplayWidgets.dart';
 import 'package:chatterbox/utils/universalcolorvariables.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -246,7 +247,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     padding: const EdgeInsets.only(bottom : 10.0),
                     child: _displayGoogleSignIn? GestureDetector(
                       onTap: ()=> {
-                        performGoogleLogin(context)
+                        performGoogleSignIn(context)
                       },
                       child: Container(
                           width: _width*0.65,
@@ -937,15 +938,14 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() {
       _displayGoogleSignUp = false;
     });
+
     //_repository.signInWithGoogle().then((User user)
-    await _repository.signInWithGoogle(context);
+    await _repository.signUpWithGoogle(context);
     if(mounted) {
       setState(() {
         _displayGoogleSignUp = true;
       });
     }
-
-
 
     // if(user == null)
     //   {
@@ -970,19 +970,34 @@ class _LoginScreenState extends State<LoginScreen> {
     //
     // });
   }
-  Future<void> performGoogleLogin(BuildContext context) async
+
+
+  Future<void> performGoogleSignIn(BuildContext context) async
   {
     setState(() {
       _displayGoogleSignIn = false;
     });
     //_repository.signInWithGoogle().then((User user)
-    await _repository.signInWithGoogle(context);
+
+    await _repository.signInWithGoogle(context).then((User user){
+      checkUser(user);
+    });
 
     if(mounted) {
       setState(() {
         _displayGoogleSignIn = true;
       });
     }
+  }
+
+  void checkUser(User user)
+  {
+    _repository.authenticateUser(user).then((value){
+      if(value)
+      {
+       _repository.addDataToDb(user);
+      }
+    });
   }
 
   void toggleIcon()

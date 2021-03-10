@@ -42,7 +42,8 @@ class FirebaseMethods with ChangeNotifier{
     }
   }
 
-  Future<User> signInWithGoogle(BuildContext context) async
+
+  Future<User> signUpWithGoogle(BuildContext context) async
   {
     try {
       GoogleSignInAccount _signInAccount = await _googleSignIn
@@ -57,7 +58,7 @@ class FirebaseMethods with ChangeNotifier{
       );
       UserCredential _userCredential = await _auth.signInWithCredential(credential);
       User user = _userCredential.user;
-     // await addDataToDb(user);
+      await addDataToDb(user);
       print(user.uid);
       return user;
     }
@@ -93,7 +94,8 @@ class FirebaseMethods with ChangeNotifier{
     }
   }
 
-  Future<User> signUpWithGoogle(BuildContext context) async
+
+  Future<User> signInWithGoogle(BuildContext context) async
   {
     try {
       GoogleSignInAccount _signInAccount = await _googleSignIn
@@ -106,9 +108,9 @@ class FirebaseMethods with ChangeNotifier{
         // takes the required credentials
         idToken: _signInAuthentication.idToken,
       );
+
       UserCredential _userCredential = await _auth.signInWithCredential(credential);
       User user = _userCredential.user;
-      await addDataToDb(user);
       print(user.uid);
       return user;
     }
@@ -168,21 +170,15 @@ class FirebaseMethods with ChangeNotifier{
         username,
         null,
         null,
-        user.photoURL);
+        user.photoURL,
+        user.emailVerified,
+    );
     firebaseFirestore.collection("users").doc(user.uid).set(
         modelUser.toMap(modelUser));
   }
 
   Future <void> getDataFromDB (User user) async {
 
-  }
-
-  String getUserName (User user) {
-    String username;
-
-    /*   Query  */
-
-    return username;
   }
 
   // void authenticateUser(User user)
@@ -428,36 +424,56 @@ class FirebaseMethods with ChangeNotifier{
 
   Future uploadUserImage(BuildContext context) async{
 
-    UploadTask imageUploadTask;
 
-    Reference imageReference = FirebaseStorage.instance.ref().child('userProfileImage/${Provider.of<ProfileScreenUtils>(context,listen: false).getUserImage.path}/${TimeOfDay.now()}');
+      UploadTask imageUploadTask;
 
-    imageUploadTask = imageReference.putFile(Provider.of<ProfileScreenUtils>(context,listen: false).getUserImage);
-    await imageUploadTask.whenComplete((){
-      Navigator.of(context).pop();
-    });
-    imageReference.getDownloadURL().then((url) {
-      Provider.of<ProfileScreenUtils>(context,listen: false).userImageUrl = url.toString();
-      print('the user profile url => ${Provider.of<ProfileScreenUtils>(context,listen: false).userImageUrl}');
-      updateUserProfileUrl(context);
-      updateProfilePhoto(_auth.currentUser.uid, context);
-      notifyListeners();
+      Reference imageReference = FirebaseStorage.instance.ref().child('${Provider.of<ProfileScreenUtils>(context,listen: false).getUserImage.path}/${TimeOfDay.now()}');
 
-    });
+      imageUploadTask = imageReference.putFile(Provider.of<ProfileScreenUtils>(context,listen: false).getCroppedUserImage);
+      await imageUploadTask.whenComplete((){
+       // Navigator.of(context).pop();
+      });
+      Provider.of<ProfileScreenUtils>(context,listen: false).bucketImageReference = 'gs://'+imageReference.bucket+'/'+imageReference.fullPath;
+      print(Provider.of<ProfileScreenUtils>(context,listen: false).bucketImageReference);
+      imageReference.getDownloadURL().then((url) {
+        Provider.of<ProfileScreenUtils>(context,listen: false).userImageUrl = url.toString();
+        print('the user profile url => ${Provider.of<ProfileScreenUtils>(context,listen: false).userImageUrl}');
+        updateUserProfileUrl(context);
+        updateProfilePhoto(_auth.currentUser.uid, context);
+        notifyListeners();
+      });
+    // gs://chatterbox-9ed41.appspot.com/data/user/0/com.example.chatterbox/cache/image_picker133425239.jpg/TimeOfDay(09:30)
+    //gs://chatterbox-9ed41.appspot.com/data/user/0/com.example.chatterbox/cache/image_picker490696621.jpg/TimeOfDay(09:35)
+  }
 
+  Future deleteUserImage(BuildContext context) async {
+    FirebaseStorage.instance.ref().child(_auth.currentUser.photoURL).delete();
   }
 
   void updateUserProfileUrl(BuildContext context)
   {
     var user = _auth.currentUser;
-    user.updateProfile(displayName: user.displayName , photoURL: '${Provider.of<ProfileScreenUtils>(context,listen: false).userImageUrl}').then((value) {
+    user.updateProfile(displayName: user.displayName , photoURL: '${Provider.of<ProfileScreenUtils>(context,listen: false).userImageUrl}').then((_) {
       print("Upload Completed");
+      Navigator.pop(context);
       //showProgressSnackbar(context, "UPLOAD SUCCESSFUL");
     }).catchError((onError){
       print("upload Failed");
       //showErrorSnackbar(context,"UPLOAD FAILED");
     });
   }
+
+  Future<void> removeUserPhotoUrl(BuildContext context)
+  {
+    var user = _auth.currentUser;
+    DocumentReference users = FirebaseFirestore.instance.collection('users').doc(user.uid);
+    FirebaseStorage.instance.refFromURL('${Provider.of<ProfileScreenUtils>(context,listen: false).bucketImageReference}').delete();
+    return users.update({'profilePhoto':null}).then((_){
+      Navigator.pop(context);
+    });
+  }
+
+
 
   Future<void>updateProfilePhoto(String documentId,BuildContext context)
   {
@@ -468,7 +484,17 @@ class FirebaseMethods with ChangeNotifier{
   Future<void>updateUserName(String documentId,BuildContext context,String userName)
   {
     DocumentReference users = FirebaseFirestore.instance.collection('users').doc(documentId);
-    return users.update({'username': '$userName'});
+    return users.update({'username': '$userName'}).then((_){
+      Navigator.pop(context);
+    });
+  }
+  
+  Future<void>updateEmailVerificationStatus(bool status,String documentID)
+  {
+    DocumentReference users = FirebaseFirestore.instance.collection('users').doc(documentID);
+   // notifyListeners();
+   // print(status);
+    return users.update({'emailVerified': status});
   }
 
 }

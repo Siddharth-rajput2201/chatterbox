@@ -5,7 +5,7 @@ import 'package:chatterbox/Screens/Setting/SettingPage.dart';
 import 'package:chatterbox/pageview/ChatScreen/chatlist_screen.dart';
 import 'package:chatterbox/resources/firebase_repository.dart';
 import 'package:chatterbox/utils/universalcolorvariables.dart';
-import 'package:chatterbox/utils/utilitizes.dart';
+//import 'package:chatterbox/utils/utilitizes.dart';
 //import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -13,54 +13,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 
-
-// class UserCircle extends StatelessWidget {
-//
-//   final String text;
-//
-//   const UserCircle({Key key, @required this.text}) : super(key: key);
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       height: 40,
-//       width: 40,
-//       decoration:  BoxDecoration(
-//           borderRadius:  BorderRadius.circular(50),
-//           color: UniversalColorVariables.separatorColor
-//       ),
-//       child: Stack(
-//         children: [
-//           Align(
-//             alignment: Alignment.center,
-//             child: Text(
-//               text,
-//               style: TextStyle(
-//                 fontWeight: FontWeight.bold,
-//                 color: UniversalColorVariables.lightBlueColor,
-//               ),
-//             ),
-//           ),
-//           Align(
-//             alignment: Alignment.bottomRight,
-//             child: Container(
-//               height: 12,
-//               width: 12,
-//               decoration: BoxDecoration(
-//                 shape: BoxShape.circle,
-//                 border: Border.all(
-//                   color: UniversalColorVariables.blackColor,
-//                   width: 2,
-//                 ),
-//                 color: UniversalColorVariables.onlineDotColor,
-//               ),
-//             ),
-//           )
-//         ],
-//       ),
-//     );
-//   }
-// }
 
 
 
@@ -72,9 +24,9 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final FirebaseRepository _repository = FirebaseRepository();
   User _currentUser;
-  Timer _timer;
-  bool _isemailverified ;
-  bool _displayEmailVerificationSendButton = true;
+ //  Timer _timer;
+ // bool _isemailverified ;
+ //bool _displayEmailVerificationSendButton = true;
   PageController pageController;
   int _page = 0;
   GlobalKey<ScaffoldState> _key = GlobalKey();
@@ -82,27 +34,28 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    _timer = Timer.periodic(Duration(seconds: 1), (_timer) {
-      checkVerification();
-    });
+    // _timer = Timer.periodic(Duration(seconds: 1), (_timer) {
+    //   checkVerification();
+    // });
     super.initState();
     setState(() {
       _currentUser = _repository.getCurrentUser();
-      intials = Utils.getInitials(_currentUser.displayName,_currentUser.email);
+      //intials = Utils.getInitials(_currentUser.displayName,_currentUser.email);
     });
     pageController = PageController();
   }
 
-  @override
-  void dispose() {
-    _timer.cancel();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   _timer.cancel();
+  //   super.dispose();
+  // }
   @override
   Widget build(BuildContext context) {
-    double _width = MediaQuery.of(context).size.width;
+   //double _width = MediaQuery.of(context).size.width;
     _currentUser = _repository.getCurrentUser();
-    return  homePage(_width);
+    return //homePage(_width);
+     chatScreen();
   }
 
 
@@ -181,25 +134,25 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
 
-  Widget homePage(double _width)
-  {
-    try {
-      if (_isemailverified) {
-        return chatScreen();
-      }
-      else if(!_isemailverified) {
-        return verifyScreen(_width);
-      }
-      else
-        {
-          return waiting();
-        }
-    }
-    catch(error)
-    {
-      return waiting();
-    }
-  }
+  // Widget homePage(double _width)
+  // {
+  //   try {
+  //     if (_isemailverified) {
+  //       return chatScreen();
+  //     }
+  //     else if(!_isemailverified) {
+  //       return verifyScreen(_width);
+  //     }
+  //     else
+  //       {
+  //         return waiting();
+  //       }
+  //   }
+  //   catch(error)
+  //   {
+  //     return waiting();
+  //   }
+  // }
 
   Widget chatScreen() {
     return WillPopScope(
@@ -311,114 +264,114 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget verifyScreen(double _width)
-  {
-    return WillPopScope(
-      onWillPop: _onBackPressed,
-      child: SafeArea(
-        top: true,
-        bottom: true,
-        child: Scaffold(
-          body: Builder(
-            builder: (context)=>
-                Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Text("VERIFICATION",style: TextStyle(fontSize: 30),),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Container(
-                          margin: EdgeInsets.only(top:20),
-                          decoration: BoxDecoration(
-                              color:Colors.grey[800],
-                              borderRadius: BorderRadius.circular(20)
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Center(child: Padding(
-                                padding: const EdgeInsets.all(10.0),
-                                child: Text("PLEASE VERIFY YOUR EMAIL : \n ${_currentUser.email}",style: TextStyle(fontSize: 20),),
-                              )),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  GestureDetector(
-                                    onTap:()=>{
-                                      signOutUser()
-                                      //.whenComplete(() => Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context)=>LoginScreen()), (Route<dynamic>route) => false))
-                                    },
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(bottom : 15.0),
-                                      child: Container(
-                                        width: _width*0.30,
-                                        decoration: BoxDecoration(
-                                          color: Colors.cyan,
-                                          borderRadius: BorderRadius.circular(30),
-                                          border: Border.all(
-                                            width: 2,
-                                            color: Colors.cyan[800],
-                                          ),
-                                        ),
-                                        child: Align(
-                                          alignment: Alignment.center,
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(15.0),
-                                            child: Text("LOG OUT"),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  _displayEmailVerificationSendButton ? GestureDetector(
-                                    onTap:()=>{
-                                      verifyEmail(_currentUser, context)
-                                      //.whenComplete(() => Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context)=>LoginScreen()), (Route<dynamic>route) => false))
-                                    },
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(bottom : 15.0),
-                                      child: Container(
-                                        width: _width*0.30,
-                                        decoration: BoxDecoration(
-                                          color: Colors.orange,
-                                          borderRadius: BorderRadius.circular(30),
-                                          border: Border.all(
-                                            width: 2,
-                                            color: Colors.orange[600],
-                                          ),
-                                        ),
-                                        child: Align(
-                                          alignment: Alignment.center,
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(15.0),
-                                            child: Text("SEND"),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ):CircularProgressIndicator(),
-                                ],
-                              ),
-                            ],
-                          )
-                      ),
-                    ),
-                  ],
-                ),
-          ),
-        ),
-      ),
-    );
-  }
+  // Widget verifyScreen(double _width)
+  // {
+  //   return WillPopScope(
+  //     onWillPop: _onBackPressed,
+  //     child: SafeArea(
+  //       top: true,
+  //       bottom: true,
+  //       child: Scaffold(
+  //         body: Builder(
+  //           builder: (context)=>
+  //               Column(
+  //                 children: [
+  //                   Padding(
+  //                     padding: const EdgeInsets.all(10.0),
+  //                     child: Text("VERIFICATION",style: TextStyle(fontSize: 30),),
+  //                   ),
+  //                   Padding(
+  //                     padding: const EdgeInsets.all(10.0),
+  //                     child: Container(
+  //                         margin: EdgeInsets.only(top:20),
+  //                         decoration: BoxDecoration(
+  //                             color:Colors.grey[800],
+  //                             borderRadius: BorderRadius.circular(20)
+  //                         ),
+  //                         child: Column(
+  //                           mainAxisAlignment: MainAxisAlignment.center,
+  //                           crossAxisAlignment: CrossAxisAlignment.center,
+  //                           children: [
+  //                             Center(child: Padding(
+  //                               padding: const EdgeInsets.all(10.0),
+  //                               child: Text("PLEASE VERIFY YOUR EMAIL : \n ${_currentUser.email}",style: TextStyle(fontSize: 20),),
+  //                             )),
+  //                             Row(
+  //                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  //                               children: [
+  //                                 GestureDetector(
+  //                                   onTap:()=>{
+  //                                     signOutUser()
+  //                                     //.whenComplete(() => Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context)=>LoginScreen()), (Route<dynamic>route) => false))
+  //                                   },
+  //                                   child: Padding(
+  //                                     padding: const EdgeInsets.only(bottom : 15.0),
+  //                                     child: Container(
+  //                                       width: _width*0.30,
+  //                                       decoration: BoxDecoration(
+  //                                         color: Colors.cyan,
+  //                                         borderRadius: BorderRadius.circular(30),
+  //                                         border: Border.all(
+  //                                           width: 2,
+  //                                           color: Colors.cyan[800],
+  //                                         ),
+  //                                       ),
+  //                                       child: Align(
+  //                                         alignment: Alignment.center,
+  //                                         child: Padding(
+  //                                           padding: const EdgeInsets.all(15.0),
+  //                                           child: Text("LOG OUT"),
+  //                                         ),
+  //                                       ),
+  //                                     ),
+  //                                   ),
+  //                                 ),
+  //                                 _displayEmailVerificationSendButton ? GestureDetector(
+  //                                   onTap:()=>{
+  //                                     verifyEmail(_currentUser, context)
+  //                                     //.whenComplete(() => Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context)=>LoginScreen()), (Route<dynamic>route) => false))
+  //                                   },
+  //                                   child: Padding(
+  //                                     padding: const EdgeInsets.only(bottom : 15.0),
+  //                                     child: Container(
+  //                                       width: _width*0.30,
+  //                                       decoration: BoxDecoration(
+  //                                         color: Colors.orange,
+  //                                         borderRadius: BorderRadius.circular(30),
+  //                                         border: Border.all(
+  //                                           width: 2,
+  //                                           color: Colors.orange[600],
+  //                                         ),
+  //                                       ),
+  //                                       child: Align(
+  //                                         alignment: Alignment.center,
+  //                                         child: Padding(
+  //                                           padding: const EdgeInsets.all(15.0),
+  //                                           child: Text("SEND"),
+  //                                         ),
+  //                                       ),
+  //                                     ),
+  //                                   ),
+  //                                 ):CircularProgressIndicator(),
+  //                               ],
+  //                             ),
+  //                           ],
+  //                         )
+  //                     ),
+  //                   ),
+  //                 ],
+  //               ),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
 
-  Widget waiting()
-  {
-    return Center(child: CircularProgressIndicator());
-  }
+  // Widget waiting()
+  // {
+  //   return Center(child: CircularProgressIndicator());
+  // }
 
   void onPageChanged(int page)
   {
@@ -431,38 +384,39 @@ class _HomeScreenState extends State<HomeScreen> {
   {
     pageController.jumpToPage(page);
   }
-
-  Future<void> checkVerification() async
-  {
-      await _currentUser.reload();
-      if (_currentUser.emailVerified) {
-        setState(() {
-          _isemailverified = true;
-        });
-        _timer.cancel();
-      }
-      else {
-        setState(() {
-          _isemailverified = false;
-        });
-      }
-
-  }
+  //
+  // Future<void> checkVerification() async
+  // {
+  //     await _currentUser.reload();
+  //     if (_currentUser.emailVerified) {
+  //       setState(() {
+  //         _repository.updateEmailVerificationStatus(_currentUser.emailVerified, _currentUser.uid);
+  //         _isemailverified = true;
+  //       });
+  //       _timer.cancel();
+  //     }
+  //     else {
+  //       setState(() {
+  //         _isemailverified = false;
+  //       });
+  //     }
+  // }
+  //
   Future<void> signOutUser() async
   {
     await _repository.signOutUser();
   }
 
-  Future<void> verifyEmail( User _currentUser , BuildContext context ) async
-  {
-    setState(() {
-      _displayEmailVerificationSendButton = false;
-    });
-    await _repository.sendEmailVerification(_currentUser, context);
-    setState(() {
-      _displayEmailVerificationSendButton = true;
-    });
-  }
+  // Future<void> verifyEmail( User _currentUser , BuildContext context ) async
+  // {
+  //   setState(() {
+  //     _displayEmailVerificationSendButton = false;
+  //   });
+  //   await _repository.sendEmailVerification(_currentUser, context);
+  //   setState(() {
+  //     _displayEmailVerificationSendButton = true;
+  //   });
+  // }
 
   Future<bool> _onBackPressed()
   {

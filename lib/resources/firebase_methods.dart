@@ -423,77 +423,119 @@ class FirebaseMethods with ChangeNotifier{
 
 
   Future uploadUserImage(BuildContext context) async{
+      try{
+        UploadTask imageUploadTask;
 
+        Reference imageReference = FirebaseStorage.instance.ref().child('${Provider.of<ProfileScreenUtils>(context,listen: false).getUserImage.path}/${TimeOfDay.now()}');
 
-      UploadTask imageUploadTask;
+        imageUploadTask = imageReference.putFile(Provider.of<ProfileScreenUtils>(context,listen: false).getCroppedUserImage);
+        if(Provider.of<ProfileScreenUtils>(context,listen: false).bucketImageReference!=null)
+        {
+          deleteUserImage(context);
+        }
+        await imageUploadTask.whenComplete((){
+          // Navigator.of(context).pop();
+        });
 
-      Reference imageReference = FirebaseStorage.instance.ref().child('${Provider.of<ProfileScreenUtils>(context,listen: false).getUserImage.path}/${TimeOfDay.now()}');
+        Provider.of<ProfileScreenUtils>(context,listen: false).bucketImageReference = 'gs://'+imageReference.bucket+'/'+imageReference.fullPath;
+        print(Provider.of<ProfileScreenUtils>(context,listen: false).bucketImageReference);
+        imageReference.getDownloadURL().then((url) {
+          Provider.of<ProfileScreenUtils>(context,listen: false).userImageUrl = url.toString();
+          print('the user profile url => ${Provider.of<ProfileScreenUtils>(context,listen: false).userImageUrl}');
+          updateUserProfileUrl(context);
+          updateProfilePhoto(_auth.currentUser.uid, context);
+          notifyListeners();
+        });
+      }
+      catch(error)
+    {
+      showErrorSnackbar(context,"PROFILE IMAGE UPLOAD ERROR");
+    }
 
-      imageUploadTask = imageReference.putFile(Provider.of<ProfileScreenUtils>(context,listen: false).getCroppedUserImage);
-      await imageUploadTask.whenComplete((){
-       // Navigator.of(context).pop();
-      });
-      Provider.of<ProfileScreenUtils>(context,listen: false).bucketImageReference = 'gs://'+imageReference.bucket+'/'+imageReference.fullPath;
-      print(Provider.of<ProfileScreenUtils>(context,listen: false).bucketImageReference);
-      imageReference.getDownloadURL().then((url) {
-        Provider.of<ProfileScreenUtils>(context,listen: false).userImageUrl = url.toString();
-        print('the user profile url => ${Provider.of<ProfileScreenUtils>(context,listen: false).userImageUrl}');
-        updateUserProfileUrl(context);
-        updateProfilePhoto(_auth.currentUser.uid, context);
-        notifyListeners();
-      });
-    // gs://chatterbox-9ed41.appspot.com/data/user/0/com.example.chatterbox/cache/image_picker133425239.jpg/TimeOfDay(09:30)
-    //gs://chatterbox-9ed41.appspot.com/data/user/0/com.example.chatterbox/cache/image_picker490696621.jpg/TimeOfDay(09:35)
   }
 
   Future deleteUserImage(BuildContext context) async {
-    FirebaseStorage.instance.ref().child(_auth.currentUser.photoURL).delete();
+    try{
+      if('${Provider.of<ProfileScreenUtils>(context,listen: false).bucketImageReference}'!=null)
+      {
+        await FirebaseStorage.instance.refFromURL('${Provider.of<ProfileScreenUtils>(context,listen: false).bucketImageReference}').delete();
+        Provider.of<ProfileScreenUtils>(context,listen: false).bucketImageReference = null;
+      }
+    }
+   catch(error)
+    {
+      showErrorSnackbar(context, "NO USER PROFILE PHOTO FOUND");
+    }
   }
 
   void updateUserProfileUrl(BuildContext context)
   {
-    var user = _auth.currentUser;
-    user.updateProfile(displayName: user.displayName , photoURL: '${Provider.of<ProfileScreenUtils>(context,listen: false).userImageUrl}').then((_) {
-      print("Upload Completed");
-      Navigator.pop(context);
-      //showProgressSnackbar(context, "UPLOAD SUCCESSFUL");
-    }).catchError((onError){
-      print("upload Failed");
-      //showErrorSnackbar(context,"UPLOAD FAILED");
-    });
+    try{
+      var user = _auth.currentUser;
+      user.updateProfile(displayName: user.displayName , photoURL: '${Provider.of<ProfileScreenUtils>(context,listen: false).userImageUrl}').then((_) {
+        Navigator.pop(context);
+        showProgressSnackbar(context, "PROFILE IMAGE UPDATED");
+        //showProgressSnackbar(context, "UPLOAD SUCCESSFUL");
+      });
+    }
+    catch(error)
+    {
+      showErrorSnackbar(context, "PROFILE IMAGE UPLOAD FAILED");
+    }
+
   }
 
-  Future<void> removeUserPhotoUrl(BuildContext context)
+  Future<void> removeUserPhotoUrl(BuildContext context) async
   {
-    var user = _auth.currentUser;
-    DocumentReference users = FirebaseFirestore.instance.collection('users').doc(user.uid);
-    FirebaseStorage.instance.refFromURL('${Provider.of<ProfileScreenUtils>(context,listen: false).bucketImageReference}').delete();
-    return users.update({'profilePhoto':null}).then((_){
-      Navigator.pop(context);
-    });
+    try{
+      var user = _auth.currentUser;
+      DocumentReference users = FirebaseFirestore.instance.collection('users').doc(user.uid);
+      users.update({'profilePhoto':'https://firebasestorage.googleapis.com/v0/b/chatterbox-9ed41.appspot.com/o/data%2Fuser%2F0%2Fcom.example.chatterbox%2Fcache%2FNouserImage.png?alt=media&token=b6c69a75-6f82-41b1-b9f5-df895cd9a20c'}).then((_){
+        Navigator.pop(context);
+      });
+      await deleteUserImage(context);
+      notifyListeners();
+    }
+    catch(error)
+    {
+      showErrorSnackbar(context, "NO USER IMAGE FOUND");
+    }
+
   }
 
 
 
   Future<void>updateProfilePhoto(String documentId,BuildContext context)
   {
-    DocumentReference users = FirebaseFirestore.instance.collection('users').doc(documentId);
-    return users.update({'profilePhoto': '${Provider.of<ProfileScreenUtils>(context,listen: false).userImageUrl}'});
+    try{
+      DocumentReference users = FirebaseFirestore.instance.collection('users').doc(documentId);
+      return users.update({'profilePhoto': '${Provider.of<ProfileScreenUtils>(context,listen: false).userImageUrl}'});
+    }
+   catch(error)
+    {
+     return showErrorSnackbar(context,"PROFILE PHOTO UPDATE ERROR ! CODE:503");
+    }
   }
 
   Future<void>updateUserName(String documentId,BuildContext context,String userName)
   {
-    DocumentReference users = FirebaseFirestore.instance.collection('users').doc(documentId);
-    return users.update({'username': '$userName'}).then((_){
-      Navigator.pop(context);
-    });
+    try{
+      DocumentReference users = FirebaseFirestore.instance.collection('users').doc(documentId);
+      return users.update({'username': '$userName'}).then((_){
+        Navigator.pop(context);
+        showProgressSnackbar(context, "USERNAME UPDATED SUCCESSFULLY");
+      });
+    }
+    catch(error)
+    {
+     return showErrorSnackbar(context, "USERNAME UPDATE FAILED");
+    }
+
   }
   
   Future<void>updateEmailVerificationStatus(bool status,String documentID)
   {
     DocumentReference users = FirebaseFirestore.instance.collection('users').doc(documentID);
-   // notifyListeners();
-   // print(status);
     return users.update({'emailVerified': status});
   }
 

@@ -21,6 +21,7 @@ class ProfileScreenUtils with ChangeNotifier{
   Future pickUserImage(BuildContext context, ImageSource source,BuildContext contextForError) async {
     try{
       final pickedUserImage = await picker.getImage(source: source);
+      userImage = null;
       pickedUserImage == null ? print('SELECT IMAGE') : userImage = File(pickedUserImage.path);
       print(userImage.path);
       croppedUserImage = await ImageCropper.cropImage(sourcePath: userImage.path);
@@ -38,7 +39,7 @@ class ProfileScreenUtils with ChangeNotifier{
     }
     catch(error)
     {
-      showErrorSnackbar(context, "ERROR");
+      showErrorSnackbar(context, "IMAGE NOT SELECTED/UPLOADED");
     }
 
   }
@@ -119,100 +120,107 @@ class ProfileScreenUtils with ChangeNotifier{
 
    Future<void> photoSelectionBottomWidget (BuildContext profilePageContext)
   {
-    return showModalBottomSheet(
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
-      context: profilePageContext,
-      builder: (context){
-        return Container(
-          height: MediaQuery.of(context).size.height * 0.25,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text("Profile Photo",style: TextStyle(fontSize: 20),),
-                ],
-              ),
-              Row(
+    try{
+      return showModalBottomSheet(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
+          context: profilePageContext,
+          builder: (context){
+            return Container(
+              height: MediaQuery.of(context).size.height * 0.25,
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Container(
-                          decoration: BoxDecoration(
-                              color: Colors.purple,
-                              borderRadius: BorderRadius.circular(50)
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: IconButton(icon : Icon(Icons.camera,size: 25,),onPressed: (){
-                              Provider.of<ProfileScreenUtils>(context,listen: false).pickUserImage(context, ImageSource.camera,profilePageContext);
-                              Navigator.of(context).pop();
-                            },),
-                          )
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Text("CAMERA"),
-                      ),
+                      Text("Profile Photo",style: TextStyle(fontSize: 20),),
                     ],
                   ),
-                  Column(
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      Container(
-                          decoration: BoxDecoration(
-                              color: Colors.blue,
-                              borderRadius: BorderRadius.circular(50)
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Container(
+                              decoration: BoxDecoration(
+                                  color: Colors.purple,
+                                  borderRadius: BorderRadius.circular(50)
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: IconButton(icon : Icon(Icons.camera,size: 25,),onPressed: (){
+                                  Provider.of<ProfileScreenUtils>(context,listen: false).pickUserImage(context, ImageSource.camera,profilePageContext);
+                                  Navigator.of(context).pop();
+                                },),
+                              )
                           ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: IconButton(icon : Icon(Icons.photo,size: 25,),onPressed: (){
-                              Provider.of<ProfileScreenUtils>(context,listen: false).pickUserImage(context, ImageSource.gallery,profilePageContext);
-                             // Navigator.of(context).pop();
-                            },
-                            ),
-                          )
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text("GALLERY"),
-                      ),
-                    ],
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Container(
-                          decoration: BoxDecoration(
-                              color: Colors.red,
-                              borderRadius: BorderRadius.circular(50)
+                          Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Text("CAMERA"),
                           ),
-                          child: Padding(
+                        ],
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Container(
+                              decoration: BoxDecoration(
+                                  color: Colors.blue,
+                                  borderRadius: BorderRadius.circular(50)
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: IconButton(icon : Icon(Icons.photo,size: 25,),onPressed: (){
+                                  Provider.of<ProfileScreenUtils>(context,listen: false).pickUserImage(context, ImageSource.gallery,profilePageContext);
+                                  // Navigator.of(context).pop();
+                                },
+                                ),
+                              )
+                          ),
+                          Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: IconButton(icon : Icon(Icons.delete,size: 25,),onPressed: (){
-                              Provider.of<FirebaseMethods>(context,listen: false).removeUserPhotoUrl(context);
-                              // Navigator.of(context).pop();
-                            },
-                            ),
-                          )
+                            child: Text("GALLERY"),
+                          ),
+                        ],
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text("REMOVE"),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Container(
+                              decoration: BoxDecoration(
+                                  color: Colors.red,
+                                  borderRadius: BorderRadius.circular(50)
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: IconButton(icon : Icon(Icons.delete,size: 25,),onPressed: (){
+                                  Provider.of<FirebaseMethods>(context,listen: false).removeUserPhotoUrl(context);
+                                  // Navigator.of(context).pop();
+                                },
+                                ),
+                              )
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text("REMOVE"),
+                          ),
+                        ],
                       ),
                     ],
-                  ),
+                  )
                 ],
-              )
-            ],
-          ),
-        );
-      }
-    );
+              ),
+            );
+          }
+      );
+    }
+    catch(error)
+    {
+      return showErrorSnackbar(profilePageContext,"UPLOAD ERROR");
+    }
+
   }
 }
 

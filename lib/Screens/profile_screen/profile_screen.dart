@@ -1,6 +1,7 @@
 import 'package:chatterbox/Screens/home_screen/homescreen_helper.dart';
 import 'package:chatterbox/resources/firebase_repository.dart';
 import 'package:chatterbox/Screens/profile_screen/profilescreen_helper.dart';
+import 'package:chatterbox/utils/errorDisplayWidgets.dart';
 import 'package:chatterbox/utils/universalcolorvariables.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -63,7 +64,13 @@ class _ProfilePageState extends State<ProfilePage> {
                                 icon: Icon(Icons.camera_alt,
                                   color: Colors.white,),
                                 onPressed: (){
+                                  try{
                                     Provider.of<ProfileScreenUtils>(context,listen: false).photoSelectionBottomWidget(context);
+                                  }
+                                    catch(error)
+                                  {
+                                    showErrorSnackbar(context, "UPLOAD STOPPED");
+                                  }
                                 },
                               ),
                             ),

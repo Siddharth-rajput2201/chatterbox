@@ -4,6 +4,7 @@ import 'package:chatterbox/utils/errorDisplayWidgets.dart';
 import 'package:chatterbox/utils/universalcolorvariables.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -1043,7 +1044,7 @@ class _LoginScreenState extends State<LoginScreen> {
           _displaySignInButton = true;
           _disableSignInFormFeild = true;
         });
-        showErrorSnackbar(context, "SIGNIN FAILED");
+        Provider.of<ErrorDisplayWidget>(context,listen: false).showErrorSnackbar(context, "SIGNIN FAILED");
       }
 
   }
@@ -1071,7 +1072,7 @@ class _LoginScreenState extends State<LoginScreen> {
           _displaySignUpButton = true;
           _disableSignUpFormFeild = true;
         });
-        showErrorSnackbar(context, "SIGNUP FAILED");
+        Provider.of<ErrorDisplayWidget>(context,listen:false).showErrorSnackbar(context, "SIGNUP FAILED");
       }
   }
 

@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+
+
+
+
 class GetUserName extends StatelessWidget {
   final String documentId; // This is your User UID
 
@@ -122,6 +126,34 @@ class GetUserPhotoUrlStream extends StatelessWidget {
             //NetworkImage("${data['profilePhoto']}")
             //FadeInImage(image: NetworkImage("${data['profilePhoto']}"), placeholder: AssetImage('assets/images/NouserImage.png')
        // );
+      },
+    );
+  }
+}
+
+
+class GetUserPhotoUrlTextStream extends StatelessWidget {
+
+
+  final String documentId; // This is your User UID
+  GetUserPhotoUrlTextStream(this.documentId);
+
+  @override
+  Widget build(BuildContext context) {
+    DocumentReference users = FirebaseFirestore.instance.collection('users').doc(documentId);
+    return StreamBuilder <DocumentSnapshot>(
+      stream: users.snapshots(),
+      builder:  (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+
+        if (snapshot.hasError) {
+          return Text("ERROR");
+        }
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Text("ERROR");
+        }
+        Map<String, dynamic> data = snapshot.data.data();
+          return Text("${data['profilePhoto']}");
+
       },
     );
   }

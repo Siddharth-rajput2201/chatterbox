@@ -2,6 +2,7 @@ import 'package:chatterbox/resources/firebase_repository.dart';
 import 'package:chatterbox/utils/errorDisplayWidgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:provider/provider.dart';
 
 class ForgetPasswordScreen extends StatefulWidget {
   @override
@@ -179,7 +180,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
           _disablePasswordResetFormFeild = true;
           _displayPasswordResetButton = true;
         });
-        showErrorSnackbar(context,"PASSWORD RESET REQUEST FAILED");
+        Provider.of<ErrorDisplayWidget>(context,listen: false).showErrorSnackbar(context,"PASSWORD RESET REQUEST FAILED");
       }
     return Future.value(null);
   }

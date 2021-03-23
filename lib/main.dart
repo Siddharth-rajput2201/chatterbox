@@ -1,9 +1,13 @@
 
 import 'package:chatterbox/Screens/home_screen/home_screen.dart';
 import 'package:chatterbox/Screens/landing_screen/landing_screen.dart';
+import 'package:chatterbox/Screens/profile_screen/profilePhotoUpload_screen/profilePhotoUploadScreen_helper.dart';
 import 'package:chatterbox/Screens/profile_screen/profilescreen_helper.dart';
 import 'package:chatterbox/Screens/verifyEmailScreen/verifyEmail_screen.dart';
+import 'package:chatterbox/pageview/UserPost/UserPostHelper.dart';
+import 'package:chatterbox/pageview/pageview_helper.dart';
 import 'package:chatterbox/resources/firebase_methods.dart';
+import 'package:chatterbox/utils/errorDisplayWidgets.dart';
 //import 'package:chatterbox/resources/firebase_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -44,7 +48,11 @@ class _MyAppState extends State<MyApp> {
       ),
       providers: [
         ChangeNotifierProvider(create: (_)=>FirebaseMethods()),
-        ChangeNotifierProvider(create: (_)=>ProfileScreenUtils())
+        ChangeNotifierProvider(create: (_)=>ProfileScreenUtils()),
+        ChangeNotifierProvider(create: (_)=>ProfilePhotoUploadScreen()),
+        ChangeNotifierProvider(create: (_)=>PageViewHelper()),
+        ChangeNotifierProvider(create: (_)=>UserPostHelper()),
+        ChangeNotifierProvider(create: (_)=>ErrorDisplayWidget())
       ],
     );
   }

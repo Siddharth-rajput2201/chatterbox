@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:chatterbox/Screens/profile_screen/profilePhotoUpload_screen/profilePhotoUpload_screen.dart';
 import 'package:chatterbox/resources/firebase_methods.dart';
 import 'package:chatterbox/utils/errorDisplayWidgets.dart';
 import 'package:flutter/material.dart';
@@ -18,28 +19,46 @@ class ProfileScreenUtils with ChangeNotifier{
   String bucketImageReference;
   String get bucketImageReferenceUrl => bucketImageReference;
 
+
+
   Future pickUserImage(BuildContext context, ImageSource source,BuildContext contextForError) async {
     try{
-      final pickedUserImage = await picker.getImage(source: source);
+      final pickedUserImage = await picker.getImage(source: source ,imageQuality: 75);
       userImage = null;
       pickedUserImage == null ? print('SELECT IMAGE') : userImage = File(pickedUserImage.path);
       print(userImage.path);
       croppedUserImage = await ImageCropper.cropImage(sourcePath: userImage.path);
-      userImage == null ? showErrorSnackbar(contextForError, "NO IMAGE SELECTED") :
-      Provider.of<FirebaseMethods>(context, listen: false).uploadUserImage(context);
+      if(userImage == null)
+        {
+          Navigator.pop(context);
+          Provider.of<ErrorDisplayWidget>(context,listen:false).showErrorSnackbar(context, "NO IMAGE SELECTED");
+        }
+      else if(croppedUserImage == null)
+        {
+          Navigator.pop(context);
+          Provider.of<ErrorDisplayWidget>(context,listen:false).showErrorSnackbar(context, "NO IMAGE SELECTED");
+        }
+      else
+        {
+          Navigator.of(context).push(MaterialPageRoute(builder: (context)=>UploadPhotoScreen()));
+        }
+   //   croppedUserImage == null ? showErrorSnackbar(context, "NO IMAGE SELECTED") :
+    //  Navigator.of(context).push(MaterialPageRoute(builder: (context)=>UploadPhotoScreen()));
+      // Provider.of<FirebaseMethods>(context, listen: false).uploadUserImage(context);
+
       notifyListeners();
     }
     on FlutterError catch (PlatformError)
     {
       print(PlatformError);
       {
-        showErrorSnackbar(context, "Error");
+        Provider.of<ErrorDisplayWidget>(context,listen:false).showErrorSnackbar(context, "Error");
       }
       return Future.value(null);
     }
     catch(error)
     {
-      showErrorSnackbar(context, "IMAGE NOT SELECTED/UPLOADED");
+      Provider.of<ErrorDisplayWidget>(context,listen:false).showErrorSnackbar(context, "IMAGE NOT SELECTED/UPLOADED");
     }
 
   }
@@ -218,7 +237,7 @@ class ProfileScreenUtils with ChangeNotifier{
     }
     catch(error)
     {
-      return showErrorSnackbar(profilePageContext,"UPLOAD ERROR");
+      return Provider.of<ErrorDisplayWidget>(profilePageContext).showErrorSnackbar(profilePageContext,"UPLOAD ERROR");
     }
 
   }

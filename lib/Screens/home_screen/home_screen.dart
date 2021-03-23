@@ -3,8 +3,10 @@ import 'package:chatterbox/Screens/home_screen/homescreen_helper.dart';
 import 'package:chatterbox/Screens/profile_screen/profile_screen.dart';
 import 'package:chatterbox/Screens/Setting/SettingPage.dart';
 import 'package:chatterbox/pageview/ChatScreen/chatlist_screen.dart';
+import 'package:chatterbox/pageview/UserPost/userpost_screen.dart';
 import 'package:chatterbox/resources/firebase_repository.dart';
 import 'package:chatterbox/utils/universalcolorvariables.dart';
+import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 //import 'package:chatterbox/utils/utilitizes.dart';
 //import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -22,13 +24,14 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  String _title = "ChatterBox";
   final FirebaseRepository _repository = FirebaseRepository();
   User _currentUser;
  //  Timer _timer;
  // bool _isemailverified ;
  //bool _displayEmailVerificationSendButton = true;
   PageController pageController;
-  int _page = 0;
+  int _page = 2;
   GlobalKey<ScaffoldState> _key = GlobalKey();
   String intials;
 
@@ -42,7 +45,8 @@ class _HomeScreenState extends State<HomeScreen> {
       _currentUser = _repository.getCurrentUser();
       //intials = Utils.getInitials(_currentUser.displayName,_currentUser.email);
     });
-    pageController = PageController();
+    pageController = PageController(initialPage: 2);
+
   }
 
   // @override
@@ -76,7 +80,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       maxHeight: 60,
                       maxWidth: 60,
                     ),
-                    child: Stack(
+                    child:
+                    Stack(
                       children: [
                         GetUserPhotoUrlStream(_currentUser.uid),
                         Align(
@@ -166,34 +171,34 @@ class _HomeScreenState extends State<HomeScreen> {
           appBar: AppBar(
             backgroundColor:  UniversalColorVariables.blackColor,
             elevation: 0,
-            title:
+            title: Text(_title),
             //_currentUser.photoURL==null?Image.asset('assets/images/NouserImage.png',height: 40,width: 40,):
-            Container(
-              constraints: BoxConstraints(
-                maxHeight: 40,
-                maxWidth: 40,
-              ),
-              child: Stack(
-                children: [
-                  GetUserPhotoUrlStream(_currentUser.uid),
-                  Align(
-                    alignment: Alignment.bottomRight,
-                    child: Container(
-                      height: 15,
-                      width: 15,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: UniversalColorVariables.onlineDotColor,
-                        border: Border.all(
-                          color: UniversalColorVariables.blackColor,
-                          width: 2,
-                        ),
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            ),
+            // Container(
+            //   constraints: BoxConstraints(
+            //     maxHeight: 40,
+            //     maxWidth: 40,
+            //   ),
+            //   child: Stack(
+            //     children: [
+            //       GetUserPhotoUrlStream(_currentUser.uid),
+            //       Align(
+            //         alignment: Alignment.bottomRight,
+            //         child: Container(
+            //           height: 15,
+            //           width: 15,
+            //           decoration: BoxDecoration(
+            //             shape: BoxShape.circle,
+            //             color: UniversalColorVariables.onlineDotColor,
+            //             border: Border.all(
+            //               color: UniversalColorVariables.blackColor,
+            //               width: 2,
+            //             ),
+            //           ),
+            //         ),
+            //       )
+            //     ],
+            //   ),
+            // ),
             leading: IconButton(
               icon: Icon(Icons.notifications,
                 color: Colors.white,),
@@ -219,10 +224,11 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           body: PageView(
             children: [
-              Center(child: Text("SOCIAL")),
-              Center(child: ChatListScreen(),),
+              Center(child: Text("CONTACTS")),
               Center(child: Text("CALLS LOG"),),
-              Center(child: Text("CONTACTS"),),
+              Center(child: Text("POST"),),
+              Center(child: ChatListScreen(),),
+              UserPostScreen(),
             ],
             controller: pageController,
             onPageChanged: onPageChanged,
@@ -232,28 +238,33 @@ class _HomeScreenState extends State<HomeScreen> {
               items: <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
                   icon: Icon(
-                    Icons.home_filled,
+                    Icons.contact_phone,
                     color: (_page == 0)?Colors.lightBlue:Colors.grey,),
-                  label: "HOME",
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(
-                    Icons.chat,
-                    color: (_page == 1)?Colors.lightBlue:Colors.grey,),
-                  label: "CHATS",
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(
                     Icons.call,
-                    color: (_page == 2)?Colors.lightBlue:Colors.grey,),
-                  label: "CALLS",
+                    color: (_page == 1)?Colors.green:Colors.grey,),
                 ),
+
                 BottomNavigationBarItem(
                   icon: Icon(
-                    Icons.contact_phone,
-                    color: (_page == 3)?Colors.lightBlue:Colors.grey,),
-                  label: "CONTACTS",
+                    Icons.home_filled,
+                    color: (_page == 2)?Colors.white:Colors.grey,),
                 ),
+
+                BottomNavigationBarItem(
+                  icon: Icon(
+                    Icons.chat,
+                    color: (_page == 3)?Colors.yellowAccent:Colors.grey,),
+                ),
+
+                BottomNavigationBarItem(
+                  icon:
+                  Icon(
+                    EvaIcons.heart,
+                    color: (_page == 4)?Colors.red:Colors.grey,),
+                 ),
               ],
               onTap: navigationTapped,
               currentIndex: _page,
@@ -375,7 +386,32 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void onPageChanged(int page)
   {
+    String _temptitle = "";
+    //Color _tempColor;
+    switch (page) {
+      case 0:
+        _temptitle = "Contacts";
+     //   _tempColor = Colors.pink;
+        break;
+      case 1:
+        _temptitle = "Call Log";
+   //     _tempColor = Colors.green;
+        break;
+      case 2:
+        _temptitle = "ChatterBox";
+     //   _tempColor = Colors.deepPurple;
+        break;
+      case 3:
+        _temptitle = "Chats";
+        //   _tempColor = Colors.deepPurple;
+        break;
+      case 4:
+        _temptitle = "Profile";
+        //   _tempColor = Colors.deepPurple;
+        break;
+    }
     setState(() {
+      _title = _temptitle;
       _page = page;
     });
   }

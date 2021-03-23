@@ -4,6 +4,7 @@ import 'package:chatterbox/utils/errorDisplayWidgets.dart';
 import 'package:chatterbox/utils/utilitizes.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,6 +12,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 
 class FirebaseMethods with ChangeNotifier{
+
   final FirebaseAuth _auth = FirebaseAuth.instance;
   GoogleSignIn _googleSignIn = GoogleSignIn();
   static final FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
@@ -69,7 +71,7 @@ class FirebaseMethods with ChangeNotifier{
     {
       print(PlatformError);
       {
-        showErrorSnackbar(context, "SIGNUP/LOGIN FAILED");
+        Provider.of<ErrorDisplayWidget>(context,listen:false).showErrorSnackbar(context, "SIGNUP/LOGIN FAILED");
       }
       return Future.value(null);
     }
@@ -78,7 +80,7 @@ class FirebaseMethods with ChangeNotifier{
     {
       print(noSuchMethodError);
       {
-        showErrorSnackbar(context, "SIGNUP/LOGIN FAILED");
+        Provider.of<ErrorDisplayWidget>(context,listen:false).showErrorSnackbar(context, "SIGNUP/LOGIN FAILED");
       }
       return Future.value(null);
     }
@@ -87,7 +89,7 @@ class FirebaseMethods with ChangeNotifier{
       switch(error.code)
       {
         case 'network_error':
-          showErrorSnackbar(context, "CHECK YOUR INTERNET CONNECTIVITY");
+          Provider.of<ErrorDisplayWidget>(context,listen:false).showErrorSnackbar(context, "CHECK YOUR INTERNET CONNECTIVITY");
           break;
       }
       return Future.value(null);
@@ -121,7 +123,7 @@ class FirebaseMethods with ChangeNotifier{
     {
       print(PlatformError);
       {
-        showErrorSnackbar(context, "SIGNUP/LOGIN FAILED");
+        Provider.of<ErrorDisplayWidget>(context,listen:false).showErrorSnackbar(context, "SIGNUP/LOGIN FAILED");
       }
       return Future.value(null);
     }
@@ -130,7 +132,7 @@ class FirebaseMethods with ChangeNotifier{
     {
       print(noSuchMethodError);
       {
-        showErrorSnackbar(context, "SIGNUP/LOGIN FAILED");
+        Provider.of<ErrorDisplayWidget>(context,listen:false).showErrorSnackbar(context, "SIGNUP/LOGIN FAILED");
       }
       return Future.value(null);
     }
@@ -139,7 +141,7 @@ class FirebaseMethods with ChangeNotifier{
       switch(error.code)
       {
         case 'network_error':
-          showErrorSnackbar(context, "CHECK YOUR INTERNET CONNECTIVITY");
+          Provider.of<ErrorDisplayWidget>(context,listen:false).showErrorSnackbar(context, "CHECK YOUR INTERNET CONNECTIVITY");
           break;
       }
       return Future.value(null);
@@ -212,7 +214,7 @@ class FirebaseMethods with ChangeNotifier{
     //  User user = await getCurrentUser();
     try {
       if (await _googleSignIn.isSignedIn() == true) {
-      await _googleSignIn.disconnect();
+      await _googleSignIn.disconnect();  
       await _googleSignIn.signOut();
       }
       return await _auth.signOut();
@@ -236,7 +238,7 @@ class FirebaseMethods with ChangeNotifier{
     {
       print(PlatformError);
       {
-        showErrorSnackbar(context, "PASSWORD RESET REQUEST FAILED");
+        Provider.of<ErrorDisplayWidget>(context,listen:false).showErrorSnackbar(context, "PASSWORD RESET REQUEST FAILED");
       }
       return Future.value(null);
     }
@@ -245,7 +247,7 @@ class FirebaseMethods with ChangeNotifier{
     {
       print(noSuchMethodError);
       {
-        showErrorSnackbar(context, "PASSWORD RESET REQUEST FAILED");
+        Provider.of<ErrorDisplayWidget>(context,listen:false).showErrorSnackbar(context, "PASSWORD RESET REQUEST FAILED");
       }
       return Future.value(null);
     }
@@ -254,19 +256,19 @@ class FirebaseMethods with ChangeNotifier{
         switch (error.code)
         {
           case 'invalid-email':
-            showErrorSnackbar(context, "INVALID EMAIL");
+            Provider.of<ErrorDisplayWidget>(context,listen:false).showErrorSnackbar(context, "INVALID EMAIL");
             break;
           case 'email-already-in-use':
-            showErrorSnackbar(context, "EMAIL ALREADY IN USE ! PLEASE LOGIN IN");
+            Provider.of<ErrorDisplayWidget>(context,listen:false).showErrorSnackbar(context, "EMAIL ALREADY IN USE ! PLEASE LOGIN IN");
             break;
           case 'operation-not-allowed':
-            showErrorSnackbar(context, "AN ERROR OCCURED!PLEASE TRY AGAIN LATER");
+            Provider.of<ErrorDisplayWidget>(context,listen:false).showErrorSnackbar(context, "AN ERROR OCCURED!PLEASE TRY AGAIN LATER");
             break;
           case 'network-request-failed':
-            showErrorSnackbar(context, "PLEASE CHECK YOUR INTERNET CONNECTION");
+            Provider.of<ErrorDisplayWidget>(context,listen:false).showErrorSnackbar(context, "PLEASE CHECK YOUR INTERNET CONNECTION");
             break;
           case 'unknown':
-            showErrorSnackbar(context, "ERROR");
+            Provider.of<ErrorDisplayWidget>(context,listen:false).showErrorSnackbar(context, "ERROR");
             break;
         }
         return Future.value(null);
@@ -295,35 +297,35 @@ class FirebaseMethods with ChangeNotifier{
       switch (error.code)
       {
         case 'wrong-password':
-          showErrorSnackbar(context, "EITHER THE EMAIL OR PASSWORD IS INCORRECT");
+          Provider.of<ErrorDisplayWidget>(context,listen:false).showErrorSnackbar(context, "EITHER THE EMAIL OR PASSWORD IS INCORRECT");
           break;
 
         case 'too-many-requests':
-          showErrorSnackbar(context, "TOO MANY ATTEMPTS TRY AGAIN LATER");
+          Provider.of<ErrorDisplayWidget>(context,listen:false).showErrorSnackbar(context, "TOO MANY ATTEMPTS TRY AGAIN LATER");
           break;
 
         case 'unknown':
-          showErrorSnackbar(context, "ERROR");
+          Provider.of<ErrorDisplayWidget>(context,listen:false).showErrorSnackbar(context, "ERROR");
           break;
 
         case 'invalid-email':
-          showErrorSnackbar(context, "INVALID EMAIL");
+          Provider.of<ErrorDisplayWidget>(context,listen:false).showErrorSnackbar(context, "INVALID EMAIL");
           break;
 
         case 'email-already-in-use':
-          showErrorSnackbar(context, "EMAIL ALREADY IN USE ! PLEASE LOGIN IN");
+          Provider.of<ErrorDisplayWidget>(context,listen:false).showErrorSnackbar(context, "EMAIL ALREADY IN USE ! PLEASE LOGIN IN");
           break;
 
         case 'operation-not-allowed':
-          showErrorSnackbar(context, "AN ERROR OCCURED!PLEASE TRY AGAIN LATER");
+          Provider.of<ErrorDisplayWidget>(context,listen:false).showErrorSnackbar(context, "AN ERROR OCCURED!PLEASE TRY AGAIN LATER");
           break;
 
         case 'user-not-found':
-          showErrorSnackbar(context, "EMAIL NOT FOUND");
+          Provider.of<ErrorDisplayWidget>(context,listen:false).showErrorSnackbar(context, "EMAIL NOT FOUND");
           break;
 
         case 'network-request-failed':
-          showErrorSnackbar(context, "PLEASE CHECK YOUR INTERNET CONNECTION");
+          Provider.of<ErrorDisplayWidget>(context,listen:false).showErrorSnackbar(context, "PLEASE CHECK YOUR INTERNET CONNECTION");
           break;
       }
       return Future.value(null);
@@ -334,13 +336,13 @@ class FirebaseMethods with ChangeNotifier{
   {
     try {
        await _auth.sendPasswordResetEmail(email: email);
-       showProgressSnackbar(context,"PASSWORD RESET LINK SENT PLEASE CHECK YOUR EMAIL!");
+       Provider.of<ErrorDisplayWidget>(context,listen:false).showProgressSnackbar(context,"PASSWORD RESET LINK SENT PLEASE CHECK YOUR EMAIL!");
     }
     on PlatformException catch (PlatformError)
     {
       print(PlatformError);
       {
-        showErrorSnackbar(context, "PASSWORD RESET REQUEST FAILED");
+        Provider.of<ErrorDisplayWidget>(context,listen:false).showErrorSnackbar(context, "PASSWORD RESET REQUEST FAILED");
       }
       return Future.value(null);
     }
@@ -349,7 +351,7 @@ class FirebaseMethods with ChangeNotifier{
     {
       print(noSuchMethodError);
       {
-        showErrorSnackbar(context, "PASSWORD RESET REQUEST FAILED");
+        Provider.of<ErrorDisplayWidget>(context,listen:false).showErrorSnackbar(context, "PASSWORD RESET REQUEST FAILED");
       }
       return Future.value(null);
     }
@@ -357,19 +359,19 @@ class FirebaseMethods with ChangeNotifier{
     {
       switch(error.code){
         case 'user-not-found':
-          showErrorSnackbar(context, "EMAIL NOT FOUND");
+          Provider.of<ErrorDisplayWidget>(context,listen:false).showErrorSnackbar(context, "EMAIL NOT FOUND");
           break;
         case 'network-request-failed':
-          showErrorSnackbar(context, "PLEASE CHECK YOUR INTERNET CONNECTION");
+          Provider.of<ErrorDisplayWidget>(context,listen:false).showErrorSnackbar(context, "PLEASE CHECK YOUR INTERNET CONNECTION");
           break;
         case 'unknown':
-          showErrorSnackbar(context, "ERROR");
+          Provider.of<ErrorDisplayWidget>(context,listen:false).showErrorSnackbar(context, "ERROR");
           break;
         case 'invalid-email':
-          showErrorSnackbar(context, "INVALID EMAIL");
+          Provider.of<ErrorDisplayWidget>(context,listen:false).showErrorSnackbar(context, "INVALID EMAIL");
           break;
         case 'too-many-requests':
-          showErrorSnackbar(context, "TOO MANY ATTEMPTS TRY AGAIN LATER");
+          Provider.of<ErrorDisplayWidget>(context,listen:false).showErrorSnackbar(context, "TOO MANY ATTEMPTS TRY AGAIN LATER");
           break;
       }
     }
@@ -379,13 +381,13 @@ class FirebaseMethods with ChangeNotifier{
   {
     try {
       await currentUser.sendEmailVerification();
-      showProgressSnackbar(context, "EMAIL VERIFICATION SENT! PLEASE CHECK YOUR EMAIL");
+      Provider.of<ErrorDisplayWidget>(context,listen:false).showProgressSnackbar(context, "EMAIL VERIFICATION SENT! PLEASE CHECK YOUR EMAIL");
     }
     on PlatformException catch (PlatformError)
     {
       print(PlatformError);
       {
-        showErrorSnackbar(context, "PASSWORD RESET REQUEST FAILED");
+        Provider.of<ErrorDisplayWidget>(context,listen:false).showErrorSnackbar(context, "PASSWORD RESET REQUEST FAILED");
       }
       return Future.value(null);
     }
@@ -394,7 +396,7 @@ class FirebaseMethods with ChangeNotifier{
     {
       print(noSuchMethodError);
       {
-        showErrorSnackbar(context, "PASSWORD RESET REQUEST FAILED");
+        Provider.of<ErrorDisplayWidget>(context,listen:false).showErrorSnackbar(context, "PASSWORD RESET REQUEST FAILED");
       }
       return Future.value(null);
     }
@@ -403,29 +405,50 @@ class FirebaseMethods with ChangeNotifier{
       switch(error.code)
       {
         case 'user-not-found':
-          showErrorSnackbar(context, "EMAIL NOT FOUND");
+          Provider.of<ErrorDisplayWidget>(context,listen:false).showErrorSnackbar(context, "EMAIL NOT FOUND");
           break;
         case 'network-request-failed':
-          showErrorSnackbar(context, "PLEASE CHECK YOUR INTERNET CONNECTION");
+          Provider.of<ErrorDisplayWidget>(context,listen:false).showErrorSnackbar(context, "PLEASE CHECK YOUR INTERNET CONNECTION");
           break;
         case 'unknown':
-          showErrorSnackbar(context, "ERROR");
+          Provider.of<ErrorDisplayWidget>(context,listen:false).showErrorSnackbar(context, "ERROR");
           break;
         case 'invalid-email':
-          showErrorSnackbar(context, "INVALID EMAIL");
+          Provider.of<ErrorDisplayWidget>(context,listen:false).showErrorSnackbar(context, "INVALID EMAIL");
           break;
         case 'too-many-requests':
-          showErrorSnackbar(context, "TOO MANY ATTEMPTS TRY AGAIN LATER");
+          Provider.of<ErrorDisplayWidget>(context,listen:false).showErrorSnackbar(context, "TOO MANY ATTEMPTS TRY AGAIN LATER");
           break;
       }
     }
   }
 
+  Widget uploadImageBox(BuildContext context,)
+  {
+    return StreamBuilder<UploadTask>(
+      builder: (_,snapshot){
+        var event = snapshot?.data?.snapshot;
+        double progressPercent = event != null
+            ? event.bytesTransferred / event.totalBytes
+            : 0;
+        return Column(
 
+          children: [
+            // Progress bar
+            LinearProgressIndicator(value: progressPercent),
+            Text(
+                '${(progressPercent * 100).toStringAsFixed(2)} % '
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
+  UploadTask imageUploadTask;
   Future uploadUserImage(BuildContext context) async{
       try{
-        UploadTask imageUploadTask;
-
         Reference imageReference = FirebaseStorage.instance.ref().child('${Provider.of<ProfileScreenUtils>(context,listen: false).getUserImage.path}/${TimeOfDay.now()}');
 
         imageUploadTask = imageReference.putFile(Provider.of<ProfileScreenUtils>(context,listen: false).getCroppedUserImage);
@@ -433,9 +456,31 @@ class FirebaseMethods with ChangeNotifier{
         {
           deleteUserImage(context);
         }
-        await imageUploadTask.whenComplete((){
-          // Navigator.of(context).pop();
+        imageUploadTask.snapshotEvents.listen((snapshot) {
+          print('Task state: ${snapshot.state}');
+          print('Progress: ${(snapshot.bytesTransferred / snapshot.totalBytes) * 100} %');
+          }, onError: (e) {
+
+          // The final snapshot is also available on the task via `.snapshot`,
+          // this can include 2 additional states, `TaskState.error` & `TaskState.canceled`
+          print(imageUploadTask.snapshot);
+          if (e.code == 'permission-denied') {
+            print('User does not have permission to upload to this reference.');
+          }
         });
+        try {
+          await imageUploadTask;
+          print('Upload complete.');
+        } on FirebaseException catch (e) {
+          if (e.code == 'permission-denied') {
+            print('User does not have permission to upload to this reference.');
+          }
+          // ...
+        }
+
+        // await imageUploadTask.whenComplete((){
+        //   // Navigator.of(context).pop();
+        // });
 
         Provider.of<ProfileScreenUtils>(context,listen: false).bucketImageReference = 'gs://'+imageReference.bucket+'/'+imageReference.fullPath;
         print(Provider.of<ProfileScreenUtils>(context,listen: false).bucketImageReference);
@@ -449,8 +494,61 @@ class FirebaseMethods with ChangeNotifier{
       }
       catch(error)
     {
-      showErrorSnackbar(context,"PROFILE IMAGE UPLOAD ERROR");
+      Provider.of<ErrorDisplayWidget>(context,listen:false).showErrorSnackbar(context,"PROFILE IMAGE UPLOAD ERROR");
     }
+
+  }
+
+
+
+
+
+  // Widget uploadProgressIndicator(BuildContext context)
+  // {
+  //   UploadTask task = Provider.of<FirebaseMethods>(context).imageUploadTask;
+  //   if(task!=null)
+  //     {
+  //       task.snapshotEvents.listen((snapshot) {
+  //         print('Task state: ${snapshot.state}');
+  //         print('Progress: ${(snapshot.bytesTransferred / snapshot.totalBytes) * 100} %');
+  //
+  //       return LinearProgressIndicator(
+  //         value: (snapshot.bytesTransferred / snapshot.totalBytes) * 100,
+  //       );
+  //       });
+  //       // return StreamBuilder (
+  //       //   stream: task.snapshotEvents.listen((Snapshot) {}),
+  //       //   builder: (context,snapshot){
+  //       //     var event = snapshot?.data?.snapshot;
+  //       //     double progressPercent = event != null
+  //       //         ? event.bytesTransferred / event.totalBytes
+  //       //         : 0;
+  //       //     return Column(
+  //       //       children: [
+  //       //         // Progress bar
+  //       //         LinearProgressIndicator(value: progressPercent),
+  //       //         Text(
+  //       //             '${(progressPercent * 100).toStringAsFixed(2)} % '
+  //       //         ),
+  //       //       ],
+  //       //     );
+  //       //   },
+  //       // );
+  //     }
+  //   else{
+  //     return Container();
+  //   }
+  //
+  // }
+
+  Future<void> cancelUpload(UploadTask task) async
+  {
+    if(task != null)
+      {
+        bool cancelled = await task.cancel();
+
+        print('cancelled, $cancelled');
+      }
 
   }
 
@@ -464,9 +562,10 @@ class FirebaseMethods with ChangeNotifier{
     }
    catch(error)
     {
-      showErrorSnackbar(context, "NO USER PROFILE PHOTO FOUND");
+      Provider.of<ErrorDisplayWidget>(context,listen:false).showErrorSnackbar(context, "NO USER PROFILE PHOTO FOUND");
     }
   }
+
 
   void updateUserProfileUrl(BuildContext context)
   {
@@ -474,13 +573,14 @@ class FirebaseMethods with ChangeNotifier{
       var user = _auth.currentUser;
       user.updateProfile(displayName: user.displayName , photoURL: '${Provider.of<ProfileScreenUtils>(context,listen: false).userImageUrl}').then((_) {
         Navigator.pop(context);
-        showProgressSnackbar(context, "PROFILE IMAGE UPDATED");
+        Navigator.pop(context);
+        Provider.of<ErrorDisplayWidget>(context,listen:false).showProgressSnackbar(context, "PROFILE IMAGE UPDATED");
         //showProgressSnackbar(context, "UPLOAD SUCCESSFUL");
       });
     }
     catch(error)
     {
-      showErrorSnackbar(context, "PROFILE IMAGE UPLOAD FAILED");
+      Provider.of<ErrorDisplayWidget>(context,listen:false).showErrorSnackbar(context, "PROFILE IMAGE UPLOAD FAILED");
     }
 
   }
@@ -498,7 +598,7 @@ class FirebaseMethods with ChangeNotifier{
     }
     catch(error)
     {
-      showErrorSnackbar(context, "NO USER IMAGE FOUND");
+      Provider.of<ErrorDisplayWidget>(context,listen:false).showErrorSnackbar(context, "NO USER IMAGE FOUND");
     }
 
   }
@@ -513,7 +613,7 @@ class FirebaseMethods with ChangeNotifier{
     }
    catch(error)
     {
-     return showErrorSnackbar(context,"PROFILE PHOTO UPDATE ERROR ! CODE:503");
+     return Provider.of<ErrorDisplayWidget>(context,listen:false).showErrorSnackbar(context,"PROFILE PHOTO UPDATE ERROR ! CODE:503");
     }
   }
 
@@ -523,12 +623,12 @@ class FirebaseMethods with ChangeNotifier{
       DocumentReference users = FirebaseFirestore.instance.collection('users').doc(documentId);
       return users.update({'username': '$userName'}).then((_){
         Navigator.pop(context);
-        showProgressSnackbar(context, "USERNAME UPDATED SUCCESSFULLY");
+        Provider.of<ErrorDisplayWidget>(context,listen:false).showProgressSnackbar(context, "USERNAME UPDATED SUCCESSFULLY");
       });
     }
     catch(error)
     {
-     return showErrorSnackbar(context, "USERNAME UPDATE FAILED");
+     return Provider.of<ErrorDisplayWidget>(context,listen:false).showErrorSnackbar(context, "USERNAME UPDATE FAILED");
     }
 
   }

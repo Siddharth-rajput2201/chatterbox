@@ -25,6 +25,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   String _title = "ChatterBox";
+  IconData _leadingicon = Icons.add_box_outlined;
   final FirebaseRepository _repository = FirebaseRepository();
   User _currentUser;
  //  Timer _timer;
@@ -200,18 +201,18 @@ class _HomeScreenState extends State<HomeScreen> {
             //   ),
             // ),
             leading: IconButton(
-              icon: Icon(Icons.notifications,
+              icon: Icon(_leadingicon,
                 color: Colors.white,),
               onPressed: (){
               },
             ),
             actions: [
-              IconButton(
-                icon: Icon(Icons.search,
-                  color: Colors.white,),
-                onPressed: (){
-                },
-              ),
+              // IconButton(
+              //   icon: Icon(_icon,
+              //     color: Colors.white,),
+              //   onPressed: (){
+              //   },
+              // ),
               IconButton(
                 icon: Icon(Icons.more_vert,
                   color: Colors.white,),
@@ -387,31 +388,39 @@ class _HomeScreenState extends State<HomeScreen> {
   void onPageChanged(int page)
   {
     String _temptitle = "";
+    IconData _tempicon;
     //Color _tempColor;
     switch (page) {
       case 0:
         _temptitle = "Contacts";
+        _tempicon = null;
      //   _tempColor = Colors.pink;
         break;
       case 1:
         _temptitle = "Call Log";
+        _tempicon = null;
    //     _tempColor = Colors.green;
         break;
       case 2:
         _temptitle = "ChatterBox";
+          _tempicon = Icons.add_box_outlined;
+
      //   _tempColor = Colors.deepPurple;
         break;
       case 3:
         _temptitle = "Chats";
+        _tempicon = null;
         //   _tempColor = Colors.deepPurple;
         break;
       case 4:
         _temptitle = "Profile";
+        _tempicon = null;
         //   _tempColor = Colors.deepPurple;
         break;
     }
     setState(() {
       _title = _temptitle;
+      _leadingicon = _tempicon;
       _page = page;
     });
   }

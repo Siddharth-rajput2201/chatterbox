@@ -4,6 +4,8 @@ import 'package:chatterbox/Screens/landing_screen/landing_screen.dart';
 import 'package:chatterbox/Screens/profile_screen/profilePhotoUpload_screen/profilePhotoUploadScreen_helper.dart';
 import 'package:chatterbox/Screens/profile_screen/profilescreen_helper.dart';
 import 'package:chatterbox/Screens/verifyEmailScreen/verifyEmail_screen.dart';
+import 'package:chatterbox/pageview/FeedScreen/feed_helper.dart';
+import 'package:chatterbox/pageview/UserPost/UploadPost/uploadpost.dart';
 import 'package:chatterbox/pageview/UserPost/UserPostHelper.dart';
 import 'package:chatterbox/pageview/pageview_helper.dart';
 import 'package:chatterbox/resources/firebase_methods.dart';
@@ -52,7 +54,9 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (_)=>ProfilePhotoUploadScreen()),
         ChangeNotifierProvider(create: (_)=>PageViewHelper()),
         ChangeNotifierProvider(create: (_)=>UserPostHelper()),
-        ChangeNotifierProvider(create: (_)=>ErrorDisplayWidget())
+        ChangeNotifierProvider(create: (_)=>ErrorDisplayWidget()),
+        ChangeNotifierProvider(create: (_)=>UploadPost()),
+        ChangeNotifierProvider(create: (_)=>FeedHelper()),
       ],
     );
   }

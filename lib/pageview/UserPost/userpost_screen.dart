@@ -28,7 +28,7 @@ class _UserPostScreenState extends State<UserPostScreen> {
         child: Padding(
           padding: const EdgeInsets.all(5.0),
           child: Container(
-            height:  MediaQuery.of(context).size.height,
+           // height:  MediaQuery.of(context).size.height,
             width:  MediaQuery.of(context).size.width,
             decoration: BoxDecoration(
              // color: UniversalColorVariables.darkBlackColor,
@@ -45,7 +45,10 @@ class _UserPostScreenState extends State<UserPostScreen> {
                   {
                     return Column(
                       children: [
-                        Provider.of<UserPostHelper>(context).headerProfile(context, snapshot)
+                        Provider.of<UserPostHelper>(context).headerProfile(context, snapshot),
+                        Divider(thickness: 2,color: Colors.white30,),
+                        Provider.of<UserPostHelper>(context).middleProfile(context, snapshot),
+                        Provider.of<UserPostHelper>(context).footerProfile(context, snapshot),
                       ],
                     );
                   }

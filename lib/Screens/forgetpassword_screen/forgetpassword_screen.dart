@@ -5,6 +5,7 @@ import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 
 class ForgetPasswordScreen extends StatefulWidget {
+
   @override
   _ForgetPasswordScreenState createState() => _ForgetPasswordScreenState();
 }

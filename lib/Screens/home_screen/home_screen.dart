@@ -3,6 +3,8 @@ import 'package:chatterbox/Screens/home_screen/homescreen_helper.dart';
 import 'package:chatterbox/Screens/profile_screen/profile_screen.dart';
 import 'package:chatterbox/Screens/Setting/SettingPage.dart';
 import 'package:chatterbox/pageview/ChatScreen/chatlist_screen.dart';
+import 'package:chatterbox/pageview/FeedScreen/UploadPost/uploadpost.dart';
+import 'package:chatterbox/pageview/FeedScreen/feed_screen.dart';
 import 'package:chatterbox/pageview/UserPost/userpost_screen.dart';
 import 'package:chatterbox/resources/firebase_repository.dart';
 import 'package:chatterbox/utils/universalcolorvariables.dart';
@@ -13,6 +15,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 
 
@@ -26,6 +29,8 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   String _title = "ChatterBox";
   IconData _leadingicon = Icons.add_box_outlined;
+  Function actionPressed;
+  bool _showLeadingAction = true;
   final FirebaseRepository _repository = FirebaseRepository();
   User _currentUser;
  //  Timer _timer;
@@ -201,10 +206,10 @@ class _HomeScreenState extends State<HomeScreen> {
             //   ),
             // ),
             leading: IconButton(
+
               icon: Icon(_leadingicon,
                 color: Colors.white,),
-              onPressed: (){
-              },
+              onPressed : _showLeadingAction ?  ()=> Provider.of<UploadPost>(context,listen: false).uploadPostSelectionBottomWidget(context) : null,
             ),
             actions: [
               // IconButton(
@@ -227,7 +232,7 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               Center(child: Text("CONTACTS")),
               Center(child: Text("CALLS LOG"),),
-              Center(child: Text("POST"),),
+              FeedScreen(),
               Center(child: ChatListScreen(),),
               UserPostScreen(),
             ],
@@ -389,38 +394,44 @@ class _HomeScreenState extends State<HomeScreen> {
   {
     String _temptitle = "";
     IconData _tempicon;
+    bool _tempShowLeadingActionButton;
     //Color _tempColor;
     switch (page) {
       case 0:
         _temptitle = "Contacts";
         _tempicon = null;
+        _tempShowLeadingActionButton = false;
      //   _tempColor = Colors.pink;
         break;
       case 1:
         _temptitle = "Call Log";
         _tempicon = null;
+        _tempShowLeadingActionButton = false;
    //     _tempColor = Colors.green;
         break;
       case 2:
         _temptitle = "ChatterBox";
           _tempicon = Icons.add_box_outlined;
-
+        _tempShowLeadingActionButton = true;
      //   _tempColor = Colors.deepPurple;
         break;
       case 3:
         _temptitle = "Chats";
         _tempicon = null;
+        _tempShowLeadingActionButton = false;
         //   _tempColor = Colors.deepPurple;
         break;
       case 4:
         _temptitle = "Profile";
         _tempicon = null;
+        _tempShowLeadingActionButton = false;
         //   _tempColor = Colors.deepPurple;
         break;
     }
     setState(() {
       _title = _temptitle;
       _leadingicon = _tempicon;
+      _showLeadingAction = _tempShowLeadingActionButton;
       _page = page;
     });
   }
